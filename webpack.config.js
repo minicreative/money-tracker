@@ -1,5 +1,5 @@
-import path from 'path'
-import hwp from 'html-webpack-plugin'
+const path = require('path')
+const hwp = require('html-webpack-plugin')
 module.exports = {
 	entry: path.join(__dirname, 'app/app.js'),
 	output: {
@@ -14,6 +14,6 @@ module.exports = {
 		}]
 	},
 	plugins: [
-		new hwp({template: path.join(__dirname, 'app/index.html')})
+		new hwp({template: path.join(__dirname, 'app/app.html')})
 	]
 }

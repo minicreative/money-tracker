@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 
 const App = () => (
-	<div><h1>Money Tracker</h1></div>
+	<div><h1>Money Tracker!</h1></div>
 )
 
 ReactDOM.render(<App />, document.getElementById('root'))
