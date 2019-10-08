@@ -1,7 +1,7 @@
 const path = require('path')
 const hwp = require('html-webpack-plugin')
 module.exports = {
-	entry: path.join(__dirname, 'app/app.js'),
+	entry: path.join(__dirname, 'app/index.js'),
 	output: {
 		filename: 'build.js',
 		path: path.join(__dirname, 'build'),
@@ -14,6 +14,6 @@ module.exports = {
 		}]
 	},
 	plugins: [
-		new hwp({template: path.join(__dirname, 'app/app.html')})
+		new hwp({template: path.join(__dirname, 'app/index.html')})
 	]
 }
