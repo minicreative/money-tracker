@@ -20,6 +20,7 @@
   "homepage": "https://github.com/minicreative/money-tracker#readme",
   "dependencies": {
     "express": "^4.17.1",
+    "mongodb": "^3.3.2",
     "react": "^16.10.2",
     "react-dom": "^16.10.2"
   },
