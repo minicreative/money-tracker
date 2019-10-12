@@ -1,7 +1,13 @@
-const api = require('express').Router()
+const router = require('express').Router()
+const db = require('./tools/db')
 
-api.get('/', function (req, res) {
+router.get('/', function (req, res) {
 	res.send('money-tracker API')
 })
 
-module.exports = api
+module.exports = {
+	router,
+	setup: async () => {
+		await db.setup()
+	}
+}

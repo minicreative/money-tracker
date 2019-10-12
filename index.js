@@ -1,14 +1,18 @@
 const express = require('express')
-const port = 3000
-
-// Create new Express server
+const config = require('./config')
 const server = express()
+const api = require('./api')
 
 // Setup UI routes
 server.use(express.static('./build'))
 
-// Setup API routes
-server.use('/api', require('./api'))
+// Setup API routers
+server.use('/api', api.router)
 
-// Run server on port
-server.listen(port, () => console.log(`money-tracker listening on port ${port}...`))
+// Start dependenies and listen to port
+async function start () {
+	await api.setup()
+	server.listen(config.port, () => console.log(`money-tracker listening on port ${config.port}...`))
+}
+
+start()
