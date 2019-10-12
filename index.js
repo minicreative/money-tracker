@@ -4,7 +4,7 @@ const server = express()
 const api = require('./api')
 
 // Setup UI routes
-server.use(express.static('./build'))
+server.use(express.static('./public'))
 
 // Setup API routers
 server.use('/api', api.router)
