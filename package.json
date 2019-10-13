@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "npm-run-all -p api:dev app:dev",
     "api:dev": "nodemon --watch api index.js",
-	"app:dev": "webpack --watch --mode development",
+    "app:dev": "webpack --watch --mode development",
     "api": "nodemon index.js",
     "app": "webpack --mode production",
     "start": "npm-run-all -s app api"
