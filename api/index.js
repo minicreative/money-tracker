@@ -34,31 +34,30 @@ module.exports = {
 
 		// Middleware: Handle errors
 		server.use((err, req, res, next) => {
-			if (err) {
+			if (!err) return next();
 
-				// Forward handled errors
-				if (err.handledError) {
-					res.status(err.code).json({message: err.message})
-				} 
-				
-				// Log and send 500 for unhandled errors
-				else {
-					console.log(err)
-					res.status(Messages.codes.serverError).json({message: Messages.serverError});
-				}
-			} else next();
+			// >400: Handled errors
+			if (err.handledError) {
+				res.status(err.code).json({message: err.message})
+			} 
+			
+			// 500: Unhandled errors
+			else {
+				console.log(err)
+				res.status(Messages.codes.serverError).json({message: Messages.serverError});
+			}
 		});
 
 		// Middleware: Catch all
 		server.use((req, res) => {
 
-			// Return 400 if request not handled
+			// 400: Request not found (not handled)
 			if (!req.handled) {
 				res.status(404).end()
 				return;
 			}
 
-			// Prepare and return 200 if prepared without errors
+			// 200: Request completed, response prepared without errors
 			Secretary.prepareResponse(res, err => {
 				if (err) {
 					res.status(500).json({message: Messages.serverError})
