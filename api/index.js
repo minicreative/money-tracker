@@ -4,6 +4,7 @@ const Express = require('express')
 
 const Database = require('./tools/Database')
 const Messages = require('./tools/Messages')
+const Secretary = require('./tools/Secretary')
 
 module.exports = {
 	setup: async (server) => {
@@ -26,29 +27,45 @@ module.exports = {
 
 		// Configure routes
 		const router = Express.Router()
-		router.get('/', function (req, res) {
-			res.send('Welcome to the Money Tracker API')
-		})
 		require('./routes/User')(router)
+		require('./routes/Transaction')(router)
+		router.get('/', (req, res) => res.send('Welcome to the Money Tracker API'));
 		server.use('/api', router)
 
 		// Middleware: Handle errors
 		server.use((err, req, res, next) => {
 			if (err) {
+
+				// Forward handled errors
 				if (err.handledError) {
-					res.status(err.code);
-					res.json({message: err.message})
-				} else {
-					res.status(Messages.codes.serverError);
-					res.json({message: Messages.serverError});
+					res.status(err.code).json({message: err.message})
+				} 
+				
+				// Log and send 500 for unhandled errors
+				else {
+					console.log(err)
+					res.status(Messages.codes.serverError).json({message: Messages.serverError});
 				}
 			} else next();
 		});
 
-		// Middleware: Success
+		// Middleware: Catch all
 		server.use((req, res) => {
-			res.status(200);
-			res.json(req.body);
+
+			// Return 400 if request not handled
+			if (!req.handled) {
+				res.status(404).end()
+				return;
+			}
+
+			// Prepare and return 200 if prepared without errors
+			Secretary.prepareResponse(res, err => {
+				if (err) {
+					res.status(500).json({message: Messages.serverError})
+					return
+				}
+				res.status(200).json(res.body);
+			});
 		})
 	}
 }

@@ -9,7 +9,9 @@
     "app:dev": "webpack --watch --mode development",
     "api": "nodemon index.js",
     "app": "webpack --mode production",
-    "start": "npm-run-all -s app api"
+    "apidocs": "apidoc -i api/routes/ -o public/docs",
+    "codedocs": "jsdoc -r api/ -d public/code/",
+    "start": "npm-run-all -s app api apidocs codedocs"
   },
   "repository": {
     "type": "git",
@@ -38,7 +40,9 @@
     "@babel/core": "^7.6.4",
     "@babel/preset-env": "^7.6.3",
     "@babel/preset-react": "^7.6.3",
+    "apidoc": "^0.17.7",
     "babel-loader": "^8.0.6",
+    "jsdoc": "^3.6.3",
     "nodemon": "^1.19.4",
     "npm-run-all": "^4.1.5",
     "webpack": "^4.41.2",

@@ -9,8 +9,6 @@ const Dates = require('./../tools/Dates');
 // User Properties: configures properties for database object
 function UserProperties (schema) {
     schema.add({
-
-		// Email: the user's email (used for user uniqueness)
 		'email': {
 			'type': String,
 			'unique': true,
@@ -18,14 +16,10 @@ function UserProperties (schema) {
 			'lowercase': true,
 			'required': true,
 		},
-
-		// Password: hashed password string
 		'password': {
 			'type': String,
 			'required': true
 		},
-
-		// Name: the user's name
 		'name': {
 			'type': String,
 			'index': true,
@@ -101,7 +95,7 @@ function UserInstanceMethods (schema) {
 
 	/**
 	 * Updates an existing user
-	 * @memberof model/User#
+	 * @memberof model/User
 	 * @param {Object} params
 	 * @param {String} [params.name] Name of user
 	 * @param {function(err, user)} callback Callback function

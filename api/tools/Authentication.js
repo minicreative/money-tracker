@@ -10,6 +10,12 @@ const Messages = require('./Messages');
 // Initialize config
 const config = require('./../../config');
 
+// Helper functions
+function getTokenFromRequest (request) {
+	if (!request.headers) return null;
+	return request.headers.authorization;
+};
+
 module.exports = {
 
 	/**
@@ -19,7 +25,7 @@ module.exports = {
 	 * @param {function(err, encodedToken)} callback Callback function
 	*/
 	makeUserToken: (user, callback) => {
-		var signedObject = {
+		const signedObject = {
 			'user': user.guid,
 			'exp': parseInt(Dates.fromNow(60, 'days')),
 		};
@@ -29,26 +35,16 @@ module.exports = {
 	},
 
 	/**
-	 * Returns the token from a request object
-	 * @memberof tools/Authentication
-	 * @param {object} request Express.js request object
-	 * @return {string} Encoded token
-	 */
-	getTokenFromRequest: (request) => {
-		if (!request.headers) return null;
-		return request.headers.authorization;
-	},
-
-	/**
 	 * Produces an authentication error or returns a decoded token for a user
 	 * @memberof tools/Authentication
 	 * @param {object} request Express.js request object
 	 * @param {function(err, decodedToken)} callback Callback function
 	 */
 	authenticateUser: (request, callback) => {
-		var token = getTokenFromRequest(request);
+		const token = getTokenFromRequest(request);
 		if (!token) return callback(Secretary.authorizationError(Messages.authErrors.missingToken));
-		Token.verify(token, config.secret, function (err, decodedToken) {
+		const pureToken = token.replace('Bearer ', '');
+		Token.verify(pureToken, config.secret, function (err, decodedToken) {
 			if (decodedToken) return callback(null, decodedToken);
 			callback(Secretary.authorizationError(Messages.authErrors.unauthorized));
 		});

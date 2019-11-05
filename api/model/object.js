@@ -36,6 +36,18 @@ function ObjectProperties (schema) {
     });
 }
 
+function ObjectInstanceMethods (schema) {
+
+	/**
+	 * Formats an existing object
+	 * @memberof model/Object
+	 * @param {function(err, object)} callback Callback function
+	 */
+	schema.methods.format = function (callback) {
+		callback(null, this.toObject())
+	};
+}
+
 // Object Static Methods: attaches functionality used by the schema in general
 function ObjectStaticMethods (schema) {
 
@@ -73,5 +85,6 @@ function ObjectStaticMethods (schema) {
 // Export object properties and methods
 module.exports = function (schema) {
 	ObjectProperties(schema);
+	ObjectInstanceMethods(schema);
 	ObjectStaticMethods(schema);
 }

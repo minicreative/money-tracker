@@ -48,6 +48,8 @@ function isInvalidArray (input) {
 
 // String validation functions =================================================
 function isInvalidLength (input, minlength, maxlength) {
+	if (input === null || input === undefined) 
+		return " must be defined";
 	if (minlength && input.length < minlength)
 		return " must be " +  minlength + " characters";
 	if (maxlength && input.length > maxlength)
@@ -72,6 +74,8 @@ function isInvalidEmail (input) {
 };
 
 function isInvalidPassword (input) {
+	if (input === null || input === undefined) 
+		return " must be defined";
 	if (input.search(/[a-zA-Z]/) == -1)
 		return Messages.fieldErrors.passwordLetter;
 	if (input.search(/\d/) == -1)

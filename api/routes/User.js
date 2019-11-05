@@ -12,7 +12,6 @@ const User = require('./../model/User')
 module.exports = router => {
 
 	/**
-	 * @memberof apiDocs
 	 * @api {POST} /user.create Create
 	 * @apiName Create
 	 * @apiGroup User
@@ -28,6 +27,7 @@ module.exports = router => {
 	 * @apiUse Error
 	 */
 	router.post('/user.create', (req, res, next) => {
+		req.handled = true;
 
 		// Validate all fields
 		var validations = [
@@ -64,11 +64,7 @@ module.exports = router => {
 					'email': req.body.email,
 					'password': password,
 				}, (err, user) => {
-					if (user) Secretary.addToResponse({
-						'response': res,
-						'key': "user",
-						'value': user,
-					});
+					if (user) Secretary.addToResponse(res, "user", user)
 					callback(err, user);
 				});
 			},
@@ -76,12 +72,7 @@ module.exports = router => {
 			// Create an authentication token for user, add to reply
 			(user, callback) => {
 				Authentication.makeUserToken(user, (err, token) => {
-					Secretary.addToResponse({
-						'response': res,
-						'key': "token",
-						'value': token,
-						'noFormat': true
-					})
+					if (token) Secretary.addToResponse(res, "token", token, true)
 					callback(err);
 				});
 			},
