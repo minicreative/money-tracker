@@ -57,5 +57,8 @@ module.exports = {
 		'emailAlreadyUsed': "An account with this email already exists",
 		'emailNotFound': "Email not recognized",
 		'passwordIncorrect': "Incorrect password",
+		'categoryNotFound': "Category not found in the database",
+		'parentCategoryNotFound': "Parent category not found in the database",
+		'invalidParentCategory': "A category's parent cannot be itself"
 	}
 };

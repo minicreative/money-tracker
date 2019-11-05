@@ -80,4 +80,69 @@ module.exports = router => {
 		], err => next(err));
 	})
 
+	/**
+	 * @api {POST} /user.login Login
+	 * @apiName Login
+	 * @apiGroup User
+	 * @apiDescription Return authentication and user
+	 *
+	 * @apiParam {String} email User's email address
+	 * @apiParam {String} password User's password (min. 8 characters, numbers and letter required)
+	 *
+	 * @apiSuccess {Object} user User object
+	 * @apiSuccess {String} token Authentication token
+	 *
+	 * @apiUse Error
+	 */
+	router.post('/user.login', (req, res, next) => {
+		req.handled = true;
+
+		// Validate all fields
+		var validations = [
+			Validation.email('Email', req.body.email),
+			Validation.password('Password', req.body.password)
+		];
+		var err = Validation.catchErrors(validations);
+		if (err) return next(err);
+
+		// Hash password
+		var password = HashPassword.generate(req.body.password);
+
+		// Synchronously perform the following tasks...
+		Async.waterfall([
+
+			// Find user with email
+			callback => {
+				Database.findOne({
+					'model': User,
+					'query': {
+						'email': req.body.email,
+					},
+				}, (err, user) => {
+					if (!user) callback(Secretary.conflictError(Messages.conflictErrors.emailNotFound));
+					else callback(err, user);
+				});
+			},
+
+			// Check password, add to request if correct
+			(user, callback) => {
+				if (HashPassword.verify(req.body.password, user.password)) {
+					callback(null, user);
+					Secretary.addToResponse(res, "user", user);
+				} else {
+					callback(Secretary.conflictError(Messages.conflictErrors.passwordIncorrect));
+				}
+			},
+
+			// Create an authentication token for user, add to reply
+			(user, callback) => {
+				Authentication.makeUserToken(user, (err, token) => {
+					if (token) Secretary.addToResponse(res, "token", token, true)
+					callback(err);
+				});
+			},
+
+		], err => next(err));
+	})
+
 }

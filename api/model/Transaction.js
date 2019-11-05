@@ -15,8 +15,8 @@ function TransactionProperties (schema) {
 		},
 		'description': {
 			'type': String,
-			'required': true,
 			'index': true,
+			'required': true,
 		},
 		'date': {
 			'type': Number,
@@ -69,18 +69,19 @@ function TransactionStaticMethods (schema) {
 				};
 
 				// Setup database update
-				var update = {
-					'$set': {
-						'guid': GUID,
-						'user': user,
-						'description': description,
-						'date': date,
-						'amount': amount,
-						'category': category,
-						'dateCreated': Dates.now(),
-					}
+				let set = {
+					'guid': GUID,
+					'user': user,
+					'description': description,
+					'date': date,
+					'amount': amount,
+					'dateCreated': Dates.now(),
 				};
-
+				if (category) set.category = category;
+				let update = {
+					'$set': set
+				};
+				
 				// Make database update
 				Database.update({
 					'model': Transaction,
@@ -106,7 +107,7 @@ function TransactionInstanceMethods (schema) {
 	 * @param {String} [params.description] Description
 	 * @param {Number} [params.date] Date
 	 * @param {Number} [params.amount] Amount
-	 * @param {String} [params.category] Category GUID
+	 * @param {String} params.category Category GUID
 	 * @param {function(err, transaction)} callback Callback function
 	 */
 	schema.methods.edit = function ({description, date, amount, category}, callback) {
@@ -122,34 +123,34 @@ function TransactionInstanceMethods (schema) {
 		// Setup database update
 		var set = {
 			'lastModified': Dates.now(),
+			'category': category
 		};
 		if (description) set.description = description;
 		if (date) set.date = date;
 		if (amount) set.amount = amount;
-		if (category) set.category = category;
 		var update = {
 			'$set': set
 		};
 
 		// Make database update
 		Database.update({
-			'model': User.constructor,
+			'model': Transaction.constructor,
 			'query': query,
 			'update': update,
-		}, function (err, user) {
-			callback(err, user);
+		}, function (err, transaction) {
+			callback(err, transaction);
 		});
 	};
 
 };
 
-// Make schema for new user object...
+// Make schema for new transaction object...
 const transactionSchema = new Mongoose.Schema;
 
 // Inherit Object properties and methods
 require('./Object')(transactionSchema);
 
-// Add user properties and methods to schema
+// Add transaction properties and methods to schema
 TransactionProperties(transactionSchema);
 TransactionStaticMethods(transactionSchema);
 TransactionInstanceMethods(transactionSchema);

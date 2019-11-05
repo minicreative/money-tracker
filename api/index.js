@@ -25,10 +25,15 @@ module.exports = {
 			next();
 		});
 
-		// Configure routes
+		// Setup router
 		const router = Express.Router()
+
+		// Import individual route collections
 		require('./routes/User')(router)
 		require('./routes/Transaction')(router)
+		require('./routes/Category')(router)
+
+		// Set root route, configure router
 		router.get('/', (req, res) => res.send('Welcome to the Money Tracker API'));
 		server.use('/api', router)
 
@@ -51,7 +56,7 @@ module.exports = {
 		// Middleware: Catch all
 		server.use((req, res) => {
 
-			// 400: Request not found (not handled)
+			// 404: Request not found (not handled)
 			if (!req.handled) {
 				res.status(404).end()
 				return;

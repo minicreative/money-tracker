@@ -2,7 +2,7 @@
 
 // Initialize dependencies
 const Uuid = require('uuid');
-const Database = require('./../tools/Database.js');
+const Database = require('../tools/Database.js');
 
 // Object Properties: configures properties for database object
 function ObjectProperties (schema) {
