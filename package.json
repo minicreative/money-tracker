@@ -4,14 +4,15 @@
   "description": "Simple JS app for keeping track of spending",
   "main": "index.js",
   "scripts": {
-    "dev": "npm-run-all -p api:dev app:dev",
-    "api:dev": "nodemon --watch api index.js",
-    "app:dev": "webpack --watch --mode development",
-    "api": "nodemon index.js",
-    "app": "webpack --mode production",
-    "apidocs": "apidoc -i api/routes/ -o public/docs",
+    "apidocs": "apidoc -i api/routes/ -o public/docs/",
     "codedocs": "jsdoc -r api/ -d public/code/",
-    "start": "npm-run-all -s app api apidocs codedocs"
+    "app:dev": "webpack --watch --mode development",
+    "server:dev": "nodemon --watch api index.js",
+    "dev": "npm-run-all -p app:dev server:dev",
+    "build": "webpack --mode production",
+    "run": "nodemon index.js",
+    "start": "npm-run-all -s build run",
+    "start:full": "npm-run-all -s apidocs codedocs build run"
   },
   "repository": {
     "type": "git",
