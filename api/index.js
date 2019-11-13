@@ -1,5 +1,4 @@
 const BodyParser = require('body-parser')
-const Morgan = require('morgan')
 const Express = require('express')
 
 const Database = require('./tools/Database')
@@ -12,21 +11,21 @@ module.exports = {
 		// Start database
 		await Database.setup()
 
-		// Configure Express server
-		server.use(BodyParser.json())
-		server.use(Morgan('tiny'))
+		// Setup router
+		const router = Express.Router()
+		server.use('/api', router)
+
+		// Configure router
+		router.use(BodyParser.json())
 
 		// Middleware: Set headers
-		server.use((req, res, next) => {
+		router.use((req, res, next) => {
 			res.setHeader('Access-Control-Allow-Origin', '*');
 			res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, POST, GET');
 			res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,Content-type,Authorization');
 			res.setHeader('Access-Control-Allow-Credentials', true);
 			next();
 		});
-
-		// Setup router
-		const router = Express.Router()
 
 		// Import individual route collections
 		require('./routes/User')(router)
@@ -35,10 +34,9 @@ module.exports = {
 
 		// Set root route, configure router
 		router.get('/', (req, res) => res.send('Welcome to the Money Tracker API'));
-		server.use('/api', router)
 
 		// Middleware: Handle errors
-		server.use((err, req, res, next) => {
+		router.use((err, req, res, next) => {
 			if (!err) return next();
 
 			// >400: Handled errors
@@ -54,7 +52,7 @@ module.exports = {
 		});
 
 		// Middleware: Catch all
-		server.use((req, res) => {
+		router.use((req, res) => {
 
 			// 404: Request not found (not handled)
 			if (!req.handled) {

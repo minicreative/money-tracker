@@ -1,8 +1,12 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
+// Import dependencies
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { BrowserRouter } from 'react-router-dom';
 
-const App = () => (
-	<div><h1>Money Tracker!</h1></div>
-)
+// Import SCSS
+import './scss/app.scss';
 
-ReactDOM.render(<App />, document.getElementById('root'))
+// Import App
+import App from './App';
+
+ReactDOM.render(<BrowserRouter><App /></BrowserRouter>, document.getElementById('root'));
