@@ -94,7 +94,9 @@ module.exports = {
 	 */
 	setup: () => {
 		process.stdout.write(`Connecting to Mongo at ${host}...`)
-		return Mongoose.connect(`mongodb://${username}:${password}@${host}/${name}`, {
+		let auth = ''
+		if (username && password) auth = `${username}:${password}@`
+		return Mongoose.connect(`mongodb://${auth}${host}/${name}`, {
 			useNewUrlParser: true,
 			useUnifiedTopology: true,
 			useCreateIndex: true,

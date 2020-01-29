@@ -12,6 +12,48 @@ const User = require('./../model/User')
 module.exports = router => {
 
 	/**
+	 * @api {POST} /user.get Get
+	 * @apiName Get
+	 * @apiGroup User
+	 * @apiDescription Get a user using authentication token
+	 *
+	 * @apiParam {String} token User's token
+	 *
+	 * @apiSuccess {Object} user User object
+	 *
+	 * @apiUse Error
+	 */
+	router.post('/user.get', (req, res, next) => {
+		req.handled = true;
+
+		// Synchronously perform the following tasks...
+		Async.waterfall([
+
+			// Authenticate user
+			callback => {
+				Authentication.authenticateUser(req, function (err, token) {
+					callback(err, token);
+				});
+			},
+
+			// Find and return user from token
+			(token, callback) => {
+				Database.findOne({
+					'model': User,
+					'query': {
+						'guid': token.user,
+					},
+				}, (err, user) => {
+					if (!user) return callback(Secretary.conflictError(Messages.authErrors.invalidToken));
+					Secretary.addToResponse(res, 'user', user);
+					callback();
+				});
+			}
+
+		], err => next(err));
+	})
+
+	/**
 	 * @api {POST} /user.create Create
 	 * @apiName Create
 	 * @apiGroup User

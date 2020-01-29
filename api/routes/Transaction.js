@@ -12,6 +12,46 @@ const Category = require('./../model/Category')
 module.exports = router => {
 
 	/**
+	 * @api {POST} /transaction.list List
+	 * @apiName List
+	 * @apiGroup Transaction
+	 * @apiDescription Lists transactions
+	 *
+	 * @apiSuccess {Object} transaction Transaction object
+	 *
+	 * @apiUse Authorization
+	 * @apiUse Error
+	 */
+	router.post('/transaction.list', (req, res, next) => {
+		req.handled = true;
+
+		// Synchronously perform the following tasks...
+		Async.waterfall([
+
+			// Authenticate user
+			callback => {
+				Authentication.authenticateUser(req, function (err, token) {
+					callback(err, token);
+				});
+			},
+
+			// Find transactions for user
+			(token, callback) => {
+				Database.find({
+					'model': Transaction,
+					'query': {
+						'user': token.user
+					}
+				}, (err, transactions) => {
+					Secretary.addToResponse(res, "transactions", transactions);
+					callback(err, transactions)
+				})
+			},
+
+		], err => next(err));
+	})
+
+	/**
 	 * @api {POST} /transaction.create Create
 	 * @apiName Create
 	 * @apiGroup Transaction

@@ -69,7 +69,7 @@ module.exports = router => {
 				};
 				if (parent) vars.parent = parent.guid;
 				Category.create(vars, (err, category) => {
-					Secretary.addToResponse(res, "category", category)
+					Secretary.addToResponse(res, 'category', category)
 					callback(err);
 				});
 			}
@@ -155,7 +155,7 @@ module.exports = router => {
 					'name': req.body.name,
 					'parent': req.body.parent,
 				}, (err, category) => {
-					Secretary.addToResponse(res, "category", category)
+					Secretary.addToResponse(res, 'category', category)
 					callback(err);
 				});
 			}

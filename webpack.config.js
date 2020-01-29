@@ -11,5 +11,11 @@ module.exports = {
 			exclude: /node_modules/,
 			loader: 'babel-loader'
 		}]
+	},
+	node: {
+		console: true,
+		tls: 'empty',
+		net: 'empty',
+		fs: 'empty',
 	}
 }

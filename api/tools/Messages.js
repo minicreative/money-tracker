@@ -20,6 +20,7 @@ module.exports = {
 	 * @memberof tools/Messages
 	 */
 	'authErrors': {
+		'invalidToken': "Invalid token",
 		'missingToken': "Missing authorization token",
 		'unauthorized': "Unauthorized",
 		'noAccess': "Unauthorized to access object",
