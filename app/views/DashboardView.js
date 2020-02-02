@@ -10,6 +10,7 @@ export default class DashboardView extends View {
 
 	constructor(props){
 		super(props)
+		this.fileInput = React.createRef()
 	}
 
 	state = {
@@ -24,6 +25,11 @@ export default class DashboardView extends View {
 		}).catch((response) => {
 			self.setState({ error: response.message })
 		})
+	}
+
+	upload = (event) => {
+		event.preventDefault()
+		console.log(this.fileInput.current.files[0])
 	}
 
 	logout = () => {
@@ -44,6 +50,10 @@ export default class DashboardView extends View {
 						return <div key={index}>{`${item.description} : $${item.amount}`}</div>
 					})
 					: null}
+				<form onSubmit={this.upload}>
+					<input type="file" ref={this.fileInput}></input>
+					<input type="submit"></input>
+				</form>
 				<div onClick={this.logout}>Logout</div>
 			</div>
 		);

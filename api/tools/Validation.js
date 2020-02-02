@@ -201,3 +201,15 @@ module.exports.sort = function (name, input) {
 		isInvalidSort(input),
 	], name);
 };
+
+/**
+ * Returns error with CSV input
+ * @memberof tools/Validation
+ * @param {String} name Name of field
+ * @param {String} input Field input
+ * @return {Object} Error message (or null)
+ */
+module.exports.csv = function (name, input) {
+	// TODO: Validate CSV
+	return null;
+};

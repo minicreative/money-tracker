@@ -125,7 +125,7 @@ module.exports = router => {
 	})
 
 	/**
-	 * @api {POST} /transaction.edit Create
+	 * @api {POST} /transaction.edit Edit
 	 * @apiName Edit
 	 * @apiGroup Transaction
 	 * @apiDescription Edits and returns an existing transaction
@@ -207,6 +207,51 @@ module.exports = router => {
 					callback(err);
 				});
 			}
+			
+		], err => next(err));
+	})
+
+	/**
+	 * @api {POST} /transaction.import Import
+	 * @apiName Import
+	 * @apiGroup Transaction
+	 * @apiDescription Imports a list of transactions
+	 *
+	 * @apiParam {String} csv Comma-seperated list of transactions
+	 *
+	 * @apiUse Authorization
+	 * @apiUse Error
+	 */
+	router.post('/transaction.import', (req, res, next) => {
+		req.handled = true;
+
+		// Synchronously perform the following tasks...
+		Async.waterfall([
+
+			// Authenticate user
+			callback => {
+				Authentication.authenticateUser(req, function (err, token) {
+					callback(err, token);
+				});
+			},
+
+			// Validate parameters
+			(token, callback) => {
+				var validations = [
+					Validation.csv('CSV', req.body.csv)
+				];
+				callback(Validation.catchErrors(validations), token)
+			},
+
+			// Create categories for CSV
+			(token, callback) => {
+
+			},
+
+			// Create transactions with category
+			(token, transaction, callback) => {
+
+			},
 			
 		], err => next(err));
 	})
