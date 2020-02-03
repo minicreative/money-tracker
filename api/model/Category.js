@@ -33,6 +33,7 @@ function CategoryStaticMethods (schema) {
 	 * @param {Object} params
 	 * @param {String} params.user User GUID
 	 * @param {String} params.name Name
+	 * @param {String} params.parent Parent category GUIT
 	 * @param {function(err, Category)} callback Callback function
 	 */
 	schema.statics.create = function ({user, name, parent}, callback) {
@@ -83,6 +84,33 @@ function CategoryStaticMethods (schema) {
 		], function (err, category) {
 			callback(err, category);
 		});
+	};
+
+	/**
+	 * Finds an existing a new Category in the database
+	 * @memberof model/Category
+	 * @param {Object} params
+	 * @param {String} params.user User GUID
+	 * @param {String} params.name Name
+	 * @param {function(err, Category)} callback Callback function
+	 */
+	schema.statics.findOrCreate = function ({user, name}, callback) {
+
+		// Save reference to model
+		var Category = this;
+
+		// Search for category by name, return if exists, create if not
+		Database.findOne({
+			model: Category,
+			query: { name }
+		}, (err, category) => {
+			if (category) {
+				return callback(null, category)
+			}
+			Category.create({user, name}, (err, category) => {
+				callback(err, category);
+			})
+		})
 	};
 };
 
