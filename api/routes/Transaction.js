@@ -1,4 +1,6 @@
 const Async = require('async')
+const Papa = require('papaparse')
+const Moment = require('moment')
 
 const Database = require('./../tools/Database')
 const Validation = require('./../tools/Validation')
@@ -225,6 +227,8 @@ module.exports = router => {
 	router.post('/transaction.import', (req, res, next) => {
 		req.handled = true;
 
+		let categories = {};
+
 		// Synchronously perform the following tasks...
 		Async.waterfall([
 
@@ -243,14 +247,51 @@ module.exports = router => {
 				callback(Validation.catchErrors(validations), token)
 			},
 
-			// Create categories for CSV
+			// Parse CSV
 			(token, callback) => {
+				let parsed = Papa.parse(req.body.csv, {
+					header: true,
+					skipEmptyLines: 'greedy'
+				})
+				callback(null, token, parsed.data)
+			},
 
+			// Create categories for rows
+			// TODO: This should check for existing category
+			// Probably should just implement Category.findOrCreate()
+			(token, transactions, callback) => {
+				transactions.forEach(transaction => {
+					categories[transaction.Category] = true
+				})
+				Async.eachOfSeries(categories, (x, category, callback) => {
+					console.log(`Creating cateogry ${category}...`)
+					Category.create({
+						'user': token.user,
+						'name': category,
+					}, err => callback(err))
+				}, err => callback(err, token, transactions))
 			},
 
 			// Create transactions with category
-			(token, transaction, callback) => {
-
+			(token, transactions, callback) => {
+				Async.eachSeries(transactions, (transaction, callback) => {
+					Database.findOne({
+						model: Category,
+						query: {
+							name: transaction.Category
+						}
+					}, (err, category) => {
+						if (err) return callback(err)
+						console.log(`Creating transaction ${transaction.Description}...`)
+						Transaction.create({
+							user: token.user,
+							description: transaction.Description,
+							amount: transaction.Amount,
+							category: category.guid,
+							date: Moment(transaction.Date).format('X')
+						}, err => callback(err))
+					})
+				}, err => callback(err))
 			},
 			
 		], err => next(err));

@@ -16,7 +16,9 @@ module.exports = {
 		server.use('/api', router)
 
 		// Configure router
-		router.use(BodyParser.json())
+		router.use(BodyParser.json({
+			limit: '20mb'
+		}))
 
 		// Middleware: Set headers
 		router.use((req, res, next) => {

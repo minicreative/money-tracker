@@ -29,7 +29,17 @@ export default class DashboardView extends View {
 
 	upload = (event) => {
 		event.preventDefault()
-		console.log(this.fileInput.current.files[0])
+		const file = this.fileInput.current.files[0]
+		const reader = new FileReader()
+		reader.onload = event => {
+			let text = event.target.result
+			Requests.do('transaction.import', {
+				csv: text
+			}).then(response => {
+				console.log('Import complete')
+			})
+		}
+		reader.readAsText(file)
 	}
 
 	logout = () => {
