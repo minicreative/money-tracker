@@ -75,7 +75,7 @@ function TransactionStaticMethods (schema) {
 					'description': description,
 					'date': date,
 					'amount': amount,
-					'dateCreated': Dates.now(),
+					'lastModified': Dates.now(),
 				};
 				if (category) set.category = category;
 				let update = {
