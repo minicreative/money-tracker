@@ -104,11 +104,9 @@ function CategoryStaticMethods (schema) {
 			model: Category,
 			query: { name }
 		}, (err, category) => {
-			if (category) {
-				return callback(null, category)
-			}
+			if (category) return callback(null, category)
 			Category.create({user, name}, (err, category) => {
-				callback(err, category);
+				callback(err, category)
 			})
 		})
 	};

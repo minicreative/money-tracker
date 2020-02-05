@@ -1,10 +1,11 @@
 // Import dependencies
-import React from 'react';
+import React from 'react'
+import Moment from 'moment'
 
 import Requests from '../tools/Requests'
-import View from '../components/View';
-import { NO_AUTH_LANDING } from '../tools/Constants';
-import Authentication from '../tools/Authentication';
+import View from '../components/View'
+import { NO_AUTH_LANDING } from '../tools/Constants'
+import Authentication from '../tools/Authentication'
 
 export default class DashboardView extends View {
 
@@ -57,7 +58,8 @@ export default class DashboardView extends View {
 					: null}
 				{transactions
 					? transactions.map((item, index) => {
-						return <div key={index}>{`${item.description} : $${item.amount}`}</div>
+						return <div key={index}>{`${Moment(item.date*1000).format('MMM D YYYY')} / 
+							${item.description} / $${item.amount} / ${item.categoryName}`}</div>
 					})
 					: null}
 				<form onSubmit={this.upload}>

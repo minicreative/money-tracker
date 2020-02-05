@@ -39,11 +39,13 @@ module.exports = router => {
 
 			// Find transactions for user
 			(token, callback) => {
-				Database.find({
+				Database.page({
 					'model': Transaction,
 					'query': {
 						'user': token.user
-					}
+					},
+					'sort': '-date',
+					'pageSize': 2000,
 				}, (err, transactions) => {
 					Secretary.addToResponse(res, "transactions", transactions);
 					callback(err, transactions)
@@ -227,7 +229,8 @@ module.exports = router => {
 	router.post('/transaction.import', (req, res, next) => {
 		req.handled = true;
 
-		let categories = {};
+		const categories = {};
+		const errors = [];
 
 		// Synchronously perform the following tasks...
 		Async.waterfall([
@@ -257,44 +260,48 @@ module.exports = router => {
 			},
 
 			// Create categories for rows
-			// TODO: This should check for existing category
-			// Probably should just implement Category.findOrCreate()
 			(token, transactions, callback) => {
 				transactions.forEach(transaction => {
-					categories[transaction.Category] = true
+					categories[transaction.Category] = ""
 				})
-				Async.eachOfSeries(categories, (x, category, callback) => {
-					console.log(`Creating cateogry ${category}...`)
-					Category.create({
+				Async.eachOfSeries(categories, (x, name, callback) => {
+					Category.findOrCreate({
 						'user': token.user,
-						'name': category,
-					}, err => callback(err))
+						'name': name,
+					}, (err, category) => {
+						categories[name] = category.guid;
+						callback(err)
+					})
 				}, err => callback(err, token, transactions))
 			},
 
 			// Create transactions with category
 			(token, transactions, callback) => {
-				Async.eachSeries(transactions, (transaction, callback) => {
-					Database.findOne({
-						model: Category,
-						query: {
-							name: transaction.Category
-						}
-					}, (err, category) => {
-						if (err) return callback(err)
-						console.log(`Creating transaction ${transaction.Description}...`)
-						Transaction.create({
-							user: token.user,
-							description: transaction.Description,
-							amount: transaction.Amount,
-							category: category.guid,
-							date: Moment(transaction.Date).format('X')
-						}, err => callback(err))
-					})
+				Async.each(transactions, (transaction, callback) => {
+
+					// Validate date
+					let date = 0;
+					try {
+						date = Moment(transaction.Date).format('X')
+					} catch(error) {
+						errors.push({error, transaction})
+						return callback()
+					}
+
+					// Create transaction
+					Transaction.create({
+						user: token.user,
+						description: transaction.Description,
+						date,
+						amount: Number(transaction.Amount.replace(/[^-\.\w]/g, '')),
+						category: categories[transaction.Category],
+					}, err => callback(err))
 				}, err => callback(err))
 			},
-			
-		], err => next(err));
+		], err => {
+			Secretary.addToResponse(res, 'errors', errors, true)
+			next(err)
+		});
 	})
 
 }

@@ -1,10 +1,13 @@
 /** @namespace model/Transaction */
 
 // Initialize dependencies
-const Mongoose = require('mongoose');
-const Async = require('async');
-const Database = require('../tools/Database');
-const Dates = require('../tools/Dates');
+const Mongoose = require('mongoose')
+const Async = require('async')
+const Database = require('../tools/Database')
+const Dates = require('../tools/Dates')
+
+// Initialize models
+const Category = require('./Category')
 
 function TransactionProperties (schema) {
     schema.add({
@@ -140,6 +143,38 @@ function TransactionInstanceMethods (schema) {
 		}, function (err, transaction) {
 			callback(err, transaction);
 		});
+	};
+
+	/**
+	 * Updates an existing transaction
+	 * @memberof model/Transaction
+	 * @param {function(err, transaction)} callback Callback function
+	 */
+	schema.methods.format = function (callback) {
+
+		// Initialize formatted object
+		var thisObject = this.toObject();
+
+		Async.waterfall([
+
+			// Attach category metadata
+			function (callback) {
+				Database.findOne({
+					'model': Category,
+					'query': {
+						'guid': thisObject.category,
+					}
+				}, function (err, category) {
+					if (category) {
+						thisObject.categoryName = category.name;
+					}
+					callback();
+				});
+			},
+
+		], function (err) {
+			callback(err, thisObject);
+		})
 	};
 
 };
