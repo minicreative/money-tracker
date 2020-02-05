@@ -12,7 +12,8 @@ Create `./config.json` with the following format:
 		"name": "money-tracker",
 		"username": "user",
 		"password": "password"
-	}
+	},
+	"secret": "any-secret-string"
 }
 ```
 
