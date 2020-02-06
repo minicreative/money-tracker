@@ -1,8 +1,5 @@
-/** @namespace modules/Authentication */
-
-import History from './History';
+/** @namespace tools/Authentication */
 import Storage from './Storage';
-import { NO_AUTH_LANDING } from './Constants';
 
 export default {
 
@@ -18,7 +15,6 @@ export default {
 
 	logout: () => {
 		Storage.clear();
-		History.replace(NO_AUTH_LANDING);
 	},
 
 	/**

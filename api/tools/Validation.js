@@ -1,7 +1,6 @@
 /** @namespace tools/Validation */
 // Validation.js: provides tools for validating incoming parameters
 
-// Initialize dependencies
 const Messages = require('./Messages');
 const Secretary = require('./Secretary');
 
@@ -184,7 +183,7 @@ module.exports.currency = function (name, input) {
 module.exports.pageSize = function (name, input) {
 	return getNamedErrorFromArray([
 		isInvalidNumber(input),
-		isInvalidSize(input, 1, 20),
+		isInvalidSize(input, 1, 2000),
 	], name);
 };
 

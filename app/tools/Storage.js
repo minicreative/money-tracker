@@ -1,4 +1,4 @@
-/** @namespace modules/Storage */
+/** @namespace tools/Storage */
 
 const Storage = {
 

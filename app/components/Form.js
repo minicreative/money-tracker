@@ -1,14 +1,9 @@
 /** @namespace components/Form */
-
-// Import dependencies
 import React from 'react'
 import { withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import _ from 'underscore'
-
 import Field from './Field'
-
-import History from './../tools/History'
 import Validation from './../tools/Validation'
 import Requests from './../tools/Requests'
 

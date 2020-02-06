@@ -1,7 +1,6 @@
-/** @namespace modules/Requests */
-
-import Request from 'request';
-import Authentication from './Authentication';
+/** @namespace tools/Requests */
+import Request from 'request'
+import Authentication from './Authentication'
 
 const Requests = {
 

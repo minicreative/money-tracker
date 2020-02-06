@@ -1,4 +1,5 @@
-// Import dependencies
+/** @namespace views/SignupView */
+
 import React from 'react'
 import { Link } from 'react-router-dom'
 

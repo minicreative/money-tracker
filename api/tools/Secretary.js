@@ -1,18 +1,14 @@
 /** @namespace tools/Secretary */
-// Secretary.js: used for communication with client (handles responses and errors)
-const Async = require('async')
 
-// Initialize dependencies
+const Async = require('async')
 const Messages = require('./Messages')
 
-// Initialize constants
 const privateKeys = [
 	"_id",
 	"__v",
 	"password"
 ];
 
-// Helper functions ============================================================
 function createError(code, message) {
 	return {
 		'code': code,

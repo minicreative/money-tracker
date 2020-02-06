@@ -1,3 +1,5 @@
+/** @namespace routes/Category */
+
 const Async = require('async')
 
 const Database = require('../tools/Database')

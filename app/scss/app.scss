@@ -1,0 +1,17 @@
+
+* {box-sizing:border-box;}
+.clear {clear:both;}
+
+.row {
+	display:block;
+	.column {display:block; float:left;}
+}
+
+.transaction {
+	.check {width:5%;}
+	.date {width:20%;}
+	.desc {width:40%;}
+	.category {width:20%;}
+	.amount {width:15%; text-align:right;}
+	input {width:100%;}
+}

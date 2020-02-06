@@ -126,8 +126,8 @@ function TransactionInstanceMethods (schema) {
 		// Setup database update
 		var set = {
 			'lastModified': Dates.now(),
-			'category': category
 		};
+		if (category) set.category = category;
 		if (description) set.description = description;
 		if (date) set.date = date;
 		if (amount) set.amount = amount;

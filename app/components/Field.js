@@ -1,7 +1,5 @@
 /** @namespace components/Field */
-
-// Import dependencies
-import React from 'react';
+import React from 'react'
 
 const renderElement = props => {
 	const { type, value, placeholder, handler } = props;

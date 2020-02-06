@@ -1,3 +1,5 @@
+/** @namespace routes/Transaction */
+
 const Async = require('async')
 const Papa = require('papaparse')
 const Moment = require('moment')
@@ -37,15 +39,22 @@ module.exports = router => {
 				});
 			},
 
+			// Validate params
+			(token, callback) => {
+				var validations = [];
+				if (req.body.pageSize) validations.push(Validation.pageSize('Page size', req.body.pageSize))
+				callback(Validation.catchErrors(validations), token)
+			},
+
 			// Find transactions for user
 			(token, callback) => {
 				Database.page({
-					'model': Transaction,
-					'query': {
-						'user': token.user
+					model: Transaction,
+					query: {
+						user: token.user
 					},
-					'sort': '-date',
-					'pageSize': 2000,
+					sort: '-date',
+					pageSize: req.body.pageSize,
 				}, (err, transactions) => {
 					Secretary.addToResponse(res, "transactions", transactions);
 					callback(err, transactions)
