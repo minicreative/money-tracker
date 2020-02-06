@@ -31,7 +31,7 @@ export default class TransactionsView extends View {
 		const self = this;
 		const { transactions } = this.state
 		self.setState({ loading: true })
-		Requests.do('transaction.list', { pageSize: 20 }).then((response) => {
+		Requests.do('transaction.list', { pageSize: 200 }).then((response) => {
 			if (response.transactions) {
 				response.transactions.forEach((transaction) => transactions.push(transaction))
 			}

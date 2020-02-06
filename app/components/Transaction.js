@@ -5,6 +5,15 @@ import Numeral from 'numeral'
 import Requests from '../tools/Requests'
 import { EDIT_TIMER } from '../tools/Constants'
 
+function getFieldStateForTransaction (transaction) {
+	return {
+		date: Moment(transaction.date*1000).format('MMMM D, YYYY'),
+		description: transaction.description,
+		category: transaction.categoryName,
+		amount: Numeral(transaction.amount).format('$0,0.00')
+	}
+}
+
 export default class Transaction extends React.Component {
 
 	constructor(props) {
@@ -16,30 +25,24 @@ export default class Transaction extends React.Component {
 	state = {
 		edited: false,
 		loading: false,
-		transaction: {
-			date: 0,
+		errors: {},
+		fields: {
+			date: '',
 			description: '',
-			categoryName: '',
-			amount: 0,
+			category: '',
+			amount: '',
 		},
 	}
 
 	componentDidMount() {
-		this.setState({ transaction: this.props.transaction })
+		this.setState({ fields: getFieldStateForTransaction(this.props.transaction) })
 	}
 
 	handleChange(event) {
 		this.lastEdited = Date.now()
-		const { transaction } = this.state
-		const { name, value } = event.target
-
-		// Handle change based on field name
-		if (name === "description") {
-			transaction.description = value
-		}
-
-		// Update state
-		this.setState({ transaction, edited: true })
+		const { fields } = this.state
+		fields[event.target.name] = event.target.value
+		this.setState({ fields, edited: true })
 
 		// Setup timer for updates
 		setTimeout(() => {
@@ -48,32 +51,60 @@ export default class Transaction extends React.Component {
 	}
 
 	update() {
-		const { transaction } = this.state
-		const { guid, description } = transaction
-		this.setState({ edited: false, loading: true })
-		Requests.do('transaction.edit', { guid, description }).then((response) => {
-			if (!this.state.edited) this.setState({ loading: false, transaction: response.transaction })
+		const { fields } = this.state
+		const errors = {}
+		const request = {
+			guid: this.props.transaction.guid,
+			description: fields.description,
+			categoryName: fields.category,
+		}
+
+		// Validate amount
+		if (fields.amount.match(/[^.,$+-\d]/g)) {
+			errors.amount = true
+		} else {
+			let formattedAmountString = fields.amount.replace(/[$,]/g, '')
+			if (isNaN(formattedAmountString)) {
+				errors.amount = true
+			} else {
+				request.amount = Number(Numeral(formattedAmountString).format('0[.]00'))
+			}
+		}
+
+		// Validate date
+		let date = Date.parse(fields.date)
+		if (isNaN(date)) {
+			errors.date = true
+		} else {
+			request.date = date/1000;
+		}
+
+		if (errors.amount || errors.date) return this.setState({ errors })
+
+		this.setState({ edited: false, loading: true, errors: {} })
+		Requests.do('transaction.edit', request).then((response) => {
+			this.setState({ loading: false, fields: getFieldStateForTransaction(response.transaction) })
 		})
 	}
 
 	render() {
-		const { edited, loading, transaction } = this.state
+		const { edited, loading, fields, errors } = this.state
 		return (
 			<div className="row transaction">
 				<div className="column check">
 					{loading ? "..." : edited ? "e" : "x"}
 				</div>
-				<div className="column date">
-					{Moment(transaction.date*1000).format('MMMM D, YYYY')}
+				<div className={`column date ${errors.date ? 'error' : null}`}>
+					<input name="date" type="text" value={fields.date} onChange={this.handleChange} />
 				</div>
-				<div className="column desc">
-					<input name="description" type="text" value={transaction.description} onChange={this.handleChange} />
+				<div className={`column desc ${errors.description ? 'error' : null}`}>
+					<input name="description" type="text" value={fields.description} onChange={this.handleChange} />
 				</div>
-				<div className="column category">
-					{transaction.categoryName}
+				<div className={`column category ${errors.category ? 'error' : null}`}>
+					<input name="category" type="text" value={fields.category} onChange={this.handleChange} />
 				</div>
-				<div className="column amount">
-					{Numeral(transaction.amount).format('$0,0.00')}
+				<div className={`column amount ${errors.amount ? 'error' : null}`}>
+					<input name="amount" type="text" value={fields.amount} onChange={this.handleChange} />
 				</div>
 				<div className="clear"></div>
 			</div>

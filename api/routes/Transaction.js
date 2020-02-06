@@ -101,6 +101,7 @@ module.exports = router => {
 					Validation.currency('Amount', req.body.amount),
 				];
 				if (req.body.category) validations.push(Validation.string('Category', req.body.category))
+				if (req.body.categoryName) validations.push(Validation.string('Category name', req.body.categoryName))
 				callback(Validation.catchErrors(validations), token)
 			},
 
@@ -115,6 +116,13 @@ module.exports = router => {
 					}, (err, category) => {
 						if (!category) callback(Secretary.requestError(Messages.conflictErrors.categoryNotFound));
 						else callback(err, token, category)
+					})
+				} else if (req.body.categoryName) {
+					Category.findOrCreate({ 
+						user: token.user,
+						name: req.body.categoryName
+					}, (err, category) => {
+						callback(err, token, category)
 					})
 				} else callback(null, token, null);
 			},
@@ -202,19 +210,26 @@ module.exports = router => {
 						}
 					}, (err, category) => {
 						if (!category) callback(Secretary.requestError(Messages.conflictErrors.categoryNotFound));
-						else callback(err, token, transaction)
+						else callback(err, token, transaction, category)
 					})
-				} else callback(null, token, transaction);
+				} else if (req.body.categoryName) {
+					Category.findOrCreate({ 
+						user: token.user,
+						name: req.body.categoryName
+					}, (err, category) => {
+						callback(err, token, transaction, category)
+					})
+				} else callback(null, token, transaction, null);
 			},
 
 			// Edit transaction, add to reply
-			(token, transaction, callback) => {
+			(token, transaction, category, callback) => {
 				transaction.edit({
 					'user': token.user,
 					'description': req.body.description,
 					'amount': req.body.amount,
 					'date': req.body.date,
-					'category': req.body.category,
+					'category': category.guid,
 				}, (err, transaction) => {
 					Secretary.addToResponse(res, "transaction", transaction)
 					callback(err);

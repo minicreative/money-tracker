@@ -169,7 +169,6 @@ module.exports.number = function (name, input) {
 module.exports.currency = function (name, input) {
 	return getNamedErrorFromArray([
 		isInvalidNumber(input),
-		isInvalidSize(input, 1, 10000)
 	], name);
 };
 

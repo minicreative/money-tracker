@@ -1,0 +1,6 @@
+{
+    "source": {
+        "include": ["api", "app"],
+        "includePattern": ".js"
+    }
+}
