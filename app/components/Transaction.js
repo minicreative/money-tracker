@@ -7,10 +7,10 @@ import { EDIT_TIMER } from '../tools/Constants'
 
 function getFieldStateForTransaction (transaction) {
 	return {
-		date: Moment(transaction.date*1000).format('MMMM D, YYYY'),
-		description: transaction.description,
-		category: transaction.categoryName,
-		amount: Numeral(transaction.amount).format('$0,0.00')
+		date: transaction.date ? Moment(transaction.date*1000).format('MMMM D, YYYY') : '',
+		description: transaction.description ? transaction.description : '',
+		category: transaction.categoryName ? transaction.categoryName : '',
+		amount: transaction.amount ? Numeral(transaction.amount).format('$0,0.00') : '',
 	}
 }
 
@@ -87,6 +87,7 @@ export default class Transaction extends React.Component {
 		})
 	}
 
+	// Might need to render just the text, and then input on click
 	render() {
 		const { edited, loading, fields, errors } = this.state
 		return (
@@ -94,16 +95,16 @@ export default class Transaction extends React.Component {
 				<div className="column check">
 					{loading ? "..." : edited ? "e" : "x"}
 				</div>
-				<div className={`column date ${errors.date ? 'error' : null}`}>
+				<div className={`column date ${errors.date ? 'error' : ''}`}>
 					<input name="date" type="text" value={fields.date} onChange={this.handleChange} />
 				</div>
-				<div className={`column desc ${errors.description ? 'error' : null}`}>
+				<div className={`column desc ${errors.description ? 'error' : ''}`}>
 					<input name="description" type="text" value={fields.description} onChange={this.handleChange} />
 				</div>
-				<div className={`column category ${errors.category ? 'error' : null}`}>
+				<div className={`column category ${errors.category ? 'error' : ''}`}>
 					<input name="category" type="text" value={fields.category} onChange={this.handleChange} />
 				</div>
-				<div className={`column amount ${errors.amount ? 'error' : null}`}>
+				<div className={`column amount ${errors.amount ? 'error' : ''}`}>
 					<input name="amount" type="text" value={fields.amount} onChange={this.handleChange} />
 				</div>
 				<div className="clear"></div>

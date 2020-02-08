@@ -95,11 +95,10 @@ module.exports = router => {
 
 			// Validate parameters
 			(token, callback) => {
-				var validations = [
-					Validation.string('Description', req.body.description),
-					Validation.number('Date', req.body.date),
-					Validation.currency('Amount', req.body.amount),
-				];
+				var validations = [];
+				if (req.body.description) validations.push(Validation.string('Description', req.body.description))
+				if (req.body.date) validations.push(Validation.number('Date', req.body.date))
+				if (req.body.amount) validations.push(Validation.currency('Amount', req.body.amount))
 				if (req.body.category) validations.push(Validation.string('Category', req.body.category))
 				if (req.body.categoryName) validations.push(Validation.string('Category name', req.body.categoryName))
 				callback(Validation.catchErrors(validations), token)
@@ -229,7 +228,7 @@ module.exports = router => {
 					'description': req.body.description,
 					'amount': req.body.amount,
 					'date': req.body.date,
-					'category': category.guid,
+					'category': category ? category.guid : undefined,
 				}, (err, transaction) => {
 					Secretary.addToResponse(res, "transaction", transaction)
 					callback(err);

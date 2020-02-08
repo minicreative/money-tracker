@@ -19,7 +19,6 @@ function TransactionProperties (schema) {
 		'description': {
 			'type': String,
 			'index': true,
-			'required': true,
 		},
 		'date': {
 			'type': Number,
@@ -27,7 +26,6 @@ function TransactionProperties (schema) {
 		},
 		'amount': {
 			'type': Number,
-			'required': true,
 		},
 		'category': {
 			'type': String,
