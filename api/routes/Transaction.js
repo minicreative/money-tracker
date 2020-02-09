@@ -239,6 +239,65 @@ module.exports = router => {
 	})
 
 	/**
+	 * @api {POST} /transaction.delete Delete
+	 * @apiName Delete
+	 * @apiGroup Transaction
+	 * @apiDescription Deletes and returns an existing transaction marked as erased
+	 *
+	 * @apiParam {String} guid Transaction GUID
+	 *
+	 * @apiSuccess {Object} transaction Transaction object
+	 *
+	 * @apiUse Authorization
+	 * @apiUse Error
+	 */
+	router.post('/transaction.delete', (req, res, next) => {
+		req.handled = true;
+
+		// Synchronously perform the following tasks...
+		Async.waterfall([
+
+			// Authenticate user
+			callback => {
+				Authentication.authenticateUser(req, function (err, token) {
+					callback(err);
+				});
+			},
+
+			// Validate parameters
+			(callback) => {
+				var validations = [
+					Validation.string('GUID', req.body.guid)
+				];
+				callback(Validation.catchErrors(validations))
+			},
+
+			// Find transaction to delete
+			(callback) => {
+				Database.findOne({
+					'model': Transaction,
+					'query': {
+						'guid': req.body.guid
+					}
+				}, (err, transaction) => {
+					if (!transaction) callback(Secretary.requestError(Messages.conflictErrors.objectNotFound));
+					else callback(err, transaction)
+				})
+			},
+
+			// Delete transaction, add to reply with "erased" property
+			(transaction, callback) => {
+				transaction.delete((err, transaction) => {
+					transaction.erased = true;
+					Secretary.addToResponse(res, "transaction", transaction)
+					callback(err);
+				});
+			}
+			
+		], err => next(err));
+	})
+
+	/**
 	 * @api {POST} /transaction.import Import
 	 * @apiName Import
 	 * @apiGroup Transaction

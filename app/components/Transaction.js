@@ -19,6 +19,7 @@ export default class Transaction extends React.Component {
 	constructor(props) {
 		super(props)
 		this.update = this.update.bind(this)
+		this.delete = this.delete.bind(this)
 		this.handleChange = this.handleChange.bind(this)
 	}
 
@@ -87,6 +88,15 @@ export default class Transaction extends React.Component {
 		})
 	}
 
+	delete() {
+		this.setState({ loading: true })
+		Requests.do('transaction.delete', { guid: this.props.transaction.guid }).then((response) => {
+			if (response.transaction) {
+				this.props.update(response.transaction)
+			}
+		})
+	}
+
 	// Might need to render just the text, and then input on click
 	render() {
 		const { edited, loading, fields, errors } = this.state
@@ -94,6 +104,7 @@ export default class Transaction extends React.Component {
 			<div className="row transaction">
 				<div className="column check">
 					{loading ? "..." : edited ? "e" : "x"}
+					<span onClick={this.delete}>{" delete"}</span>
 				</div>
 				<div className={`column date ${errors.date ? 'error' : ''}`}>
 					<input name="date" type="text" value={fields.date} onChange={this.handleChange} />

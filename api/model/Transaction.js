@@ -144,6 +144,23 @@ function TransactionInstanceMethods (schema) {
 	};
 
 	/**
+	 * Deletes an existing transaction
+	 * @memberof model/Transaction
+	 * @param {function(err, transaction)} callback Callback function
+	 */
+	schema.methods.delete = function (callback) {
+
+		// Save reference to model
+		var Transaction = this;
+
+		Transaction.deleteOne({
+			'guid': this.guid,
+		}, function (err, transaction) {
+			callback(err, transaction);
+		});
+	};
+
+	/**
 	 * Updates an existing transaction
 	 * @memberof model/Transaction
 	 * @param {function(err, transaction)} callback Callback function

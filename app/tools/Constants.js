@@ -2,4 +2,4 @@
 
 export const AUTH_LANDING = "/transactions"
 export const NO_AUTH_LANDING = "/login"
-export const EDIT_TIMER = 2000
+export const EDIT_TIMER = 5000
