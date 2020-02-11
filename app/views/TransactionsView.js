@@ -2,12 +2,11 @@
 
 import React from 'react'
 
+import Authentication from '../tools/Authentication'
 import Requests from '../tools/Requests'
 import View from '../components/View'
 import Transaction from '../components/Transaction'
-import Import from '../components/Import'
 import Moment from 'moment'
-
 export default class TransactionsView extends View {
 
 	constructor(props){
@@ -24,7 +23,12 @@ export default class TransactionsView extends View {
 	}
 
 	componentDidMount() {
-		this.page();
+		this._isMounted = true
+		if (Authentication.getToken()) this.page()
+	}
+
+	componentWillUnmount() {
+		this._isMounted = false
 	}
 
 	reload = () => {
@@ -38,9 +42,9 @@ export default class TransactionsView extends View {
 			date: Number(Moment().format('X')),
 		}).then((response) => {
 			if (response.transaction) this.update(response.transaction, true)
-			this.setState({ loading: false, error: null })
+			if (this._isMounted) this.setState({ loading: false, error: null })
 		}).catch((response) => {
-			this.setState({ loading: false, error: response.message })
+			if (this._isMounted) this.setState({ loading: false, error: response.message })
 		})
 	}
 
@@ -51,9 +55,9 @@ export default class TransactionsView extends View {
 			if (response.transactions) {
 				response.transactions.forEach((transaction) => transactions.push(transaction))
 			}
-			this.setState({ transactions, loading: false, error: null })
+			if (this._isMounted) this.setState({ transactions, loading: false, error: null })
 		}).catch((response) => {
-			this.setState({ loading: false, error: response.message })
+			if (this._isMounted) this.setState({ loading: false, error: response.message })
 		})
 	}
 
@@ -83,13 +87,14 @@ export default class TransactionsView extends View {
 		const { loading, error, transactions } = this.state;
 		return (
 			<div className="view">
-				<h1>{"Transactions"}</h1>
-				<div onClick={this.createTransaction}>{"New transaction"}</div>
+				<div class="heading">
+					<div className="button" onClick={this.createTransaction}>{"New transaction"}</div>
+					<h1>{"Transactions"}</h1>
+				</div>
 				{transactions.map((transaction) => 
 					<Transaction transaction={transaction} key={transaction.guid} update={this.update} />)}
 				{loading ? "Loading..." : null}
 				{error ? `Error: ${error}` : null}
-				<Import onSuccess={this.reload} />
 			</div>
 		);
 	}  

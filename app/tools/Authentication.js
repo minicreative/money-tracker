@@ -18,6 +18,15 @@ export default {
 	},
 
 	/**
+	 * Returns authentication boolean
+	 * @memberof modules/Authentication
+	 * @return {Boolean} Is authenticated
+	 */
+	isAuthenticated: () => {
+		return Storage.get('token') || false
+	},
+
+	/**
 	 * Returns authentication token
 	 * @memberof modules/Authentication
 	 * @return {String} Authentication token

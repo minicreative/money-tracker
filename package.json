@@ -25,6 +25,9 @@
   },
   "homepage": "https://github.com/minicreative/money-tracker#readme",
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.27",
+    "@fortawesome/free-solid-svg-icons": "^5.12.1",
+    "@fortawesome/react-fontawesome": "^0.1.8",
     "async": "^3.1.0",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",

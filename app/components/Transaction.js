@@ -3,6 +3,7 @@ import React from 'react'
 import Moment from 'moment'
 import Numeral from 'numeral'
 import Requests from '../tools/Requests'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { EDIT_TIMER } from '../tools/Constants'
 
 function getFieldStateForTransaction (transaction) {
@@ -102,10 +103,6 @@ export default class Transaction extends React.Component {
 		const { edited, loading, fields, errors } = this.state
 		return (
 			<div className="row transaction">
-				<div className="column check">
-					{loading ? "..." : edited ? "e" : "x"}
-					<span onClick={this.delete}>{" delete"}</span>
-				</div>
 				<div className={`column date ${errors.date ? 'error' : ''}`}>
 					<input name="date" type="text" value={fields.date} onChange={this.handleChange} />
 				</div>
@@ -117,6 +114,10 @@ export default class Transaction extends React.Component {
 				</div>
 				<div className={`column amount ${errors.amount ? 'error' : ''}`}>
 					<input name="amount" type="text" value={fields.amount} onChange={this.handleChange} />
+				</div>
+				<div className="column check">
+					{loading ? "..." : edited ? "e" : "s"}
+					<FontAwesomeIcon icon="trash" onClick={this.delete} />
 				</div>
 				<div className="clear"></div>
 			</div>

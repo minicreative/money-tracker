@@ -1,16 +1,125 @@
 
+// SASS Variables ==========================================================
+
+// Colors
+$bg: #f9f9f9;
+$subtle: #e9e9e9;
+$text: #222;
+
+// Sizing Defaults
+$padding: 30px;
+$padding_: 20px;
+
+// Breakpoint Sizing Default
+$l_max: 1260px;
+$m_max: 1020px;
+$s_max: 760px;
+$xs_max: 480px;
+
+// Container Sizing Defaults
+$max_container: 1200px;
+
+// SASS Plugins
+@mixin box-shadow($shadow) {-moz-box-shadow: $shadow; -webkit-box-shadow: $shadow; box-shadow: $shadow;}
+@mixin border-radius($radius) {-webkit-border-radius: $radius; border-radius: $radius; background-clip: padding-box;}
+
+// Resets & Basic Classes ===================================================
+html, body {margin:0px; padding:0px; width:100%; min-height:100%;}
+h1, h2, h3 {margin:0px; color:inherit; font-family:inherit;}
+input, textarea {
+	font-family:inherit;
+	&:focus {outline: none;}
+}
 * {box-sizing:border-box;}
+img {border:0; max-width:100%;}
+a {color:inherit; text-decoration:none;}
 .clear {clear:both;}
 
+// Default Responsive Breakpoints & Container Sizes =========================
+@mixin breakpoint($point) {
+	@if $point == l {
+		@media screen and (max-width: $l_max)  {@content;}
+	}
+	@else if $point == m {
+		@media screen and (max-width: $m_max)  {@content;}
+	}
+	@else if $point == s {
+		@media screen and (max-width: $s_max)  {@content;}
+	}
+	@else if $point == xs {
+		@media screen and (max-width: $xs_max)  {@content;}
+	}
+}
+
+.container {
+	width: $max_container; margin:0px auto;
+	@include breakpoint(l) {width:100%; padding:0px $padding;}
+	@include breakpoint(xs) {padding:0px $padding_;}
+}
+
+// Body Styles ===============================================================
+body {
+	background:$bg;
+}
+
+// /fonts =====================================================================
+body {
+	font-family:'Avenir', sans-serif; font-size:16px; color:$text; line-height:1.4;
+	@include breakpoint(s) {font-size:14px;}
+}
+h1 {
+	font-size:26px;
+	@include breakpoint(s) {font-size:20px;}
+}
+h2 {
+	font-size:22px;
+	@include breakpoint(s) {font-size:18px;}
+}
+h3 {
+	font-size:18px;
+	@include breakpoint(s) {font-size:16px;}
+}
+
+// Layout Styles ===========================================================
+header {
+	.logo {
+		display:inline-block; vertical-align:top;
+		line-height:60px; font-size:22px; text-transform:lowercase; font-weight:bold;
+	}
+	.navigation {
+		display:inline-block;
+		a {
+			display:inline-block; margin-left:30px; line-height:40px; padding-top:10px;
+			&:hover {padding-top:7px; border-top:3px solid #ddd;}
+			&.active {padding-top:7px; border-top:3px solid #ccc;}
+		}
+	}
+	.user_nav {
+		float:right;
+	}
+}
+
+.view {
+	background:white; border:1px solid $subtle; @include border-radius(5px); margin-bottom:$padding;
+}
+
+.heading {
+	border-bottom:1px solid $subtle; padding:30px 20px 20px;
+	.button {float:right;}
+}
+
 .row {
-	display:block;
+	display:block; border-bottom:1px solid $subtle; padding:0px 20px;
 	.column {display:block; float:left;}
 }
 
 .transaction {
-	input {width:100%;}
-	.check {width:5%;}
-	.date {width:20%;}
+	input {width:100%; border:0px; font-size:14px; font-weight:300; line-height:1; padding:10px;}
+	.check {width:5%; padding:10px; padding-right:0px; line-height:1; color:#ccc; text-align:right;}
+	.date {
+		width:20%;
+		input {padding-left:0px;}
+	}
 	.desc {width:40%;}
 	.category {width:20%;}
 	.amount {
@@ -18,4 +127,56 @@
 		input {text-align:right;}
 	}
 	.error input {color:red}
+}
+
+// Fonts ====================================================================
+@font-face {
+    font-family: 'Avenir';
+    src: url('/fonts/Avenir-Light-webfont.eot');
+    src: url('/fonts/Avenir-Light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/fonts/Avenir-Light-webfont.woff') format('woff'),
+         url('/fonts/Avenir-Light-webfont.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Avenir';
+    src: url('/fonts/Avenir-Roman-webfont.eot');
+    src: url('/fonts/Avenir-Roman-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/fonts/Avenir-Roman-webfont.woff') format('woff'),
+         url('/fonts/Avenir-Roman-webfont.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Avenir';
+    src: url('/fonts/Avenir-Oblique-webfont.eot');
+    src: url('/fonts/Avenir-Oblique-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/fonts/Avenir-Oblique-webfont.woff2') format('woff2'),
+         url('/fonts/Avenir-Oblique-webfont.woff') format('woff'),
+         url('/fonts/Avenir-Oblique-webfont.ttf') format('truetype');
+    font-weight: 400;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Avenir';
+    src: url('/fonts/Avenir-Medium-webfont.eot');
+    src: url('/fonts/Avenir-Medium-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/fonts/Avenir-Medium-webfont.woff') format('woff'),
+         url('/fonts/Avenir-Medium-webfont.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Avenir';
+    src: url('/fonts/Avenir-Black-webfont.eot');
+    src: url('/fonts/Avenir-Black-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/fonts/Avenir-Black-webfont.woff') format('woff'),
+         url('/fonts/Avenir-Black-webfont.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
 }

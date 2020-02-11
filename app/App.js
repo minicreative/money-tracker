@@ -1,26 +1,43 @@
 import React from 'react'
-import { Route, Redirect, BrowserRouter } from 'react-router-dom'
-
+import { Route, Redirect, Router } from 'react-router-dom'
+import { createBrowserHistory } from 'history'
 import { AUTH_LANDING, NO_AUTH_LANDING } from './tools/Constants'
 import Authentication from './tools/Authentication'
 
-// Import views
+// Components and views
+import Header from './components/Header'
 import LoginView from './views/LoginView'
 import SignupView from './views/SignupView'
 import TransactionsView from './views/TransactionsView'
+import CategoriesView from './views/CategoriesView'
+import InsightsView from './views/InsightsView'
+import SettingsView from './views/SettingsView'
+
+// Icon setup
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faTrash } from '@fortawesome/free-solid-svg-icons'
+library.add(faTrash)
+
+// Create history
+const history = createBrowserHistory();
 export default class App extends React.Component{
 	render() {
-		const isAuthenticated = Authentication.getToken() || false;
 		return (
-			<div className="app">
-				<BrowserRouter>
+			<div className="container">
+				<Router history={history}>
+					<Header history={history} />
 					<Route exact path="/">
-						{isAuthenticated ? <Redirect to={AUTH_LANDING} /> : <Redirect to={NO_AUTH_LANDING} />}
+						{Authentication.isAuthenticated() 
+							? <Redirect to={AUTH_LANDING} /> 
+							: <Redirect to={NO_AUTH_LANDING} />}
 					</Route>
-					<Route path="/login" render={props => <LoginView needsAuth={false} {...props} />}></Route>
-					<Route path="/signup" render={props => <SignupView needsAuth={false} {...props} />}></Route>
-					<Route path="/transactions" render={props => <TransactionsView needsAuth={true} {...props} />}></Route>
-				</BrowserRouter>
+					<Route path="/login" render={props => <LoginView inside={false} {...props} />}></Route>
+					<Route path="/signup" render={props => <SignupView inside={false} {...props} />}></Route>
+					<Route path="/transactions" render={props => <TransactionsView inside={true} {...props} />}></Route>
+					<Route path="/categories" render={props => <CategoriesView inside={true} {...props} />}></Route>
+					<Route path="/insights" render={props => <InsightsView inside={true} {...props} />}></Route>
+					<Route path="/settings" render={props => <SettingsView inside={true} {...props} />}></Route>
+				</Router>
 			</div>
 		);
 	}
