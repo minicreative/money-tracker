@@ -24,15 +24,17 @@ export default class Header extends React.Component{
 		return (
 			<header className={inside ? "inside" : null}>
 				<div className="logo">{APP_NAME}</div>
-				{inside ? <div className="navigation main_nav">
-					<NavLink to="/transactions">{"Transactions"}</NavLink>
-					<NavLink to="/categories">{"Categories"}</NavLink>
-					<NavLink to="/insights">{"Insights"}</NavLink>
-				</div> : null}
-				{inside ? <div className="navigation user_nav">
-					<NavLink to="/settings">{"Settings"}</NavLink>
-					<NavLink to={NO_AUTH_LANDING} onClick={this.logout}>{"Logout"}</NavLink>
-				</div> : null}
+				<div className="navigation">
+					{inside ? <div className="menu main_menu">
+						<NavLink to="/transactions">{"Transactions"}</NavLink>
+						<NavLink to="/categories">{"Categories"}</NavLink>
+						<NavLink to="/insights">{"Insights"}</NavLink>
+					</div> : null}
+					{inside ? <div className="menu user_menu">
+						<NavLink to="/settings">{"Settings"}</NavLink>
+						<NavLink to={NO_AUTH_LANDING} onClick={this.logout}>{"Logout"}</NavLink>
+					</div> : null}
+				</div>
 			</header>
 		);
 	}

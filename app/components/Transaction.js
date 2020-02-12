@@ -112,14 +112,13 @@ export default class Transaction extends React.Component {
 				<div className={`column category ${errors.category ? 'error' : ''}`}>
 					<input name="category" type="text" value={fields.category} onChange={this.handleChange} />
 				</div>
-				<div className={`column amount ${errors.amount ? 'error' : ''}`}>
+				<div className={`column amount right ${errors.amount ? 'error' : ''}`}>
 					<input name="amount" type="text" value={fields.amount} onChange={this.handleChange} />
 				</div>
-				<div className="column check">
+				<div className="column check right">
 					{loading ? "..." : edited ? "e" : "s"}
 					<FontAwesomeIcon icon="trash" onClick={this.delete} />
 				</div>
-				<div className="clear"></div>
 			</div>
 		)
 	}

@@ -87,7 +87,7 @@ export default class TransactionsView extends View {
 		const { loading, error, transactions } = this.state;
 		return (
 			<div className="view">
-				<div class="heading">
+				<div className="heading">
 					<div className="button" onClick={this.createTransaction}>{"New transaction"}</div>
 					<h1>{"Transactions"}</h1>
 				</div>
