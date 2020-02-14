@@ -37,14 +37,19 @@ export default class Transaction extends React.Component {
 	}
 
 	componentDidMount() {
+		this._isMounted = true
 		this.setState({ fields: getFieldStateForTransaction(this.props.transaction) })
+	}
+
+	componentWillUnmount() {
+		this._isMounted = false
 	}
 
 	handleChange(event) {
 		this.lastEdited = Date.now()
 		const { fields } = this.state
 		fields[event.target.name] = event.target.value
-		this.setState({ fields, edited: true })
+		if (this._isMounted) this.setState({ fields, edited: true })
 
 		// Setup timer for updates
 		setTimeout(() => {
@@ -81,16 +86,19 @@ export default class Transaction extends React.Component {
 			request.date = date/1000;
 		}
 
-		if (errors.amount || errors.date) return this.setState({ errors })
+		if (errors.amount || errors.date && this._isMounted) return this.setState({ errors })
 
-		this.setState({ edited: false, loading: true, errors: {} })
+		if (this._isMounted) this.setState({ edited: false, loading: true, errors: {} })
 		Requests.do('transaction.edit', request).then((response) => {
-			this.setState({ loading: false, fields: getFieldStateForTransaction(response.transaction) })
+			if (response.transaction) {
+				this.props.update(response.transaction)
+				if (this._isMounted) this.setState({ loading: false, fields: getFieldStateForTransaction(response.transaction) })
+			}
 		})
 	}
 
 	delete() {
-		this.setState({ loading: true })
+		if (this._isMounted) this.setState({ loading: true })
 		Requests.do('transaction.delete', { guid: this.props.transaction.guid }).then((response) => {
 			if (response.transaction) {
 				this.props.update(response.transaction)
@@ -102,7 +110,7 @@ export default class Transaction extends React.Component {
 	render() {
 		const { edited, loading, fields, errors } = this.state
 		return (
-			<div className="row transaction">
+			<li className="row transaction">
 				<div className={`column date ${errors.date ? 'error' : ''}`}>
 					<input name="date" type="text" value={fields.date} onChange={this.handleChange} />
 				</div>
@@ -119,7 +127,7 @@ export default class Transaction extends React.Component {
 					{loading ? "..." : edited ? "e" : "s"}
 					<FontAwesomeIcon icon="trash" onClick={this.delete} />
 				</div>
-			</div>
+			</li>
 		)
 	}
 }

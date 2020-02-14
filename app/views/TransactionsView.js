@@ -6,7 +6,9 @@ import Authentication from '../tools/Authentication'
 import Requests from '../tools/Requests'
 import View from '../components/View'
 import Transaction from '../components/Transaction'
-import Moment from 'moment'
+import Moment, { relativeTimeThreshold } from 'moment'
+import { TRANSACTIONS_PAGE_SIZE } from './../tools/Constants'
+
 export default class TransactionsView extends View {
 
 	constructor(props){
@@ -19,12 +21,16 @@ export default class TransactionsView extends View {
 	state = {
 		transactions: [],
 		loading: false,
-		error: null
+		error: null,
+		exhausted: false,
 	}
 
 	componentDidMount() {
 		this._isMounted = true
 		if (Authentication.getToken()) this.page()
+		this.scrollListener = window.addEventListener("scroll", e => {
+			this.handleScroll(e);
+		});
 	}
 
 	componentWillUnmount() {
@@ -34,6 +40,16 @@ export default class TransactionsView extends View {
 	reload = () => {
 		this.setState({ transactions: [] }, this.page)
 	}
+
+	handleScroll = () => { 
+		const { loading, exhausted } = this.state
+		const lastItem = document.querySelector(".view li:last-of-type");
+		const lastItemOffset = lastItem.offsetTop + lastItem.clientHeight;
+		const pageOffset = window.pageYOffset + window.innerHeight;
+		if (pageOffset > lastItemOffset) {
+			if (!loading && !exhausted) this.page();
+		}
+	};
 
 	createTransaction() {
 		const { transactions } = this.state;
@@ -50,12 +66,24 @@ export default class TransactionsView extends View {
 
 	page() {
 		const { transactions } = this.state
+
+		// Get true last transaction
+		let lastTransaction
+		if (transactions.length) {
+			lastTransaction = transactions[transactions.length - 1]
+		}
+
 		this.setState({ loading: true })
-		Requests.do('transaction.list', { pageSize: 200 }).then((response) => {
+		Requests.do('transaction.list', { 
+			pageSize: TRANSACTIONS_PAGE_SIZE, 
+			pageFrom: lastTransaction ? lastTransaction.date : undefined,
+		}).then((response) => {
+			let exhausted = false;
 			if (response.transactions) {
+				if (response.transactions.length < TRANSACTIONS_PAGE_SIZE) exhausted = true;
 				response.transactions.forEach((transaction) => transactions.push(transaction))
 			}
-			if (this._isMounted) this.setState({ transactions, loading: false, error: null })
+			if (this._isMounted) this.setState({ transactions, exhausted, loading: false, error: null })
 		}).catch((response) => {
 			if (this._isMounted) this.setState({ loading: false, error: response.message })
 		})
@@ -63,6 +91,9 @@ export default class TransactionsView extends View {
 
 	update(transaction, noSearch) {
 		const { transactions } = this.state
+
+		// Mark transaction as moved (for paging)
+		transaction.moved = true
 
 		// Find index of relevant transaction
 		let index;
@@ -80,11 +111,16 @@ export default class TransactionsView extends View {
 		// Sort transactions
 		transactions.sort((a, b) => b.date-a.date); // Needs be updated with table-aware sort function
 
+		// Don't keep transaction if it's been moved to the very bottom
+		if (transactions[transactions.length - 1].moved) {
+			transactions.pop();
+		}
+
 		this.setState({ transactions })
 	}
 	
 	render() {
-		const { loading, error, transactions } = this.state;
+		const { loading, error, exhausted, transactions } = this.state;
 		return (
 			<div className="view">
 				<div className="heading">
@@ -93,7 +129,11 @@ export default class TransactionsView extends View {
 				</div>
 				{transactions.map((transaction) => 
 					<Transaction transaction={transaction} key={transaction.guid} update={this.update} />)}
-				{loading ? "Loading..." : null}
+				{ loading
+					? "Loading..." 
+					: exhausted
+						? "No more items"
+						: <div onClick={this.page}>{"Load more"}</div> }
 				{error ? `Error: ${error}` : null}
 			</div>
 		);

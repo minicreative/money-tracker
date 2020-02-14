@@ -48,14 +48,20 @@ module.exports = router => {
 
 			// Find transactions for user
 			(token, callback) => {
-				Database.page({
+				const pageOptions = {
 					model: Transaction,
-					query: {
-						user: token.user
-					},
 					sort: '-date',
 					pageSize: req.body.pageSize,
-				}, (err, transactions) => {
+					query: {
+						user: token.user,
+					},
+				};
+				if (req.body.pageFrom) {
+					pageOptions.query.date = {
+						$lt: req.body.pageFrom
+					}
+				}
+				Database.page(pageOptions, (err, transactions) => {
 					Secretary.addToResponse(res, "transactions", transactions);
 					callback(err, transactions)
 				})
