@@ -7,6 +7,7 @@ import Requests from '../tools/Requests'
 import View from '../components/View'
 import Transaction from '../components/Transaction'
 import Moment from 'moment'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 export default class TransactionsView extends View {
 
 	constructor(props){
@@ -88,8 +89,15 @@ export default class TransactionsView extends View {
 		return (
 			<div className="view">
 				<div className="heading">
-					<div className="button" onClick={this.createTransaction}>{"New transaction"}</div>
+					<FontAwesomeIcon icon="plus-circle" className="button" onClick={this.createTransaction} />
 					<h1>{"Transactions"}</h1>
+				</div>
+				<div className="row heading_row columns transaction">
+					<div className="column date">Date</div>
+					<div className="column desc">Note</div>
+					<div className="column category">Category</div>
+					<div className="column amount right">Amount</div>
+					<div className="column check"></div>
 				</div>
 				{transactions.map((transaction) => 
 					<Transaction transaction={transaction} key={transaction.guid} update={this.update} />)}
