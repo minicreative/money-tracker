@@ -13,6 +13,49 @@ const Category = require('../model/Category')
 module.exports = router => {
 
 	/**
+	 * @api {POST} /category.list List
+	 * @apiName List
+	 * @apiGroup Category
+	 * @apiDescription Lists categories
+	 *
+	 * @apiSuccess {Array} categories Category object array
+	 *
+	 * @apiUse Authorization
+	 * @apiUse Error
+	 */
+	router.post('/category.list', (req, res, next) => {
+		req.handled = true;
+
+		// Synchronously perform the following tasks...
+		Async.waterfall([
+
+			// Authenticate user
+			callback => {
+				Authentication.authenticateUser(req, function (err, token) {
+					callback(err, token);
+				});
+			},
+
+			// Find categories for user
+			(token, callback) => {
+				const pageOptions = {
+					model: Category,
+					sort: 'name',
+					pageSize: 100,
+					query: {
+						user: token.user,
+					},
+				};
+				Database.page(pageOptions, (err, categories) => {
+					Secretary.addToResponse(res, "categories", categories);
+					callback(err, transactions)
+				})
+			},
+
+		], err => next(err));
+	})
+
+	/**
 	 * @api {POST} /category.create Create
 	 * @apiName Create
 	 * @apiGroup Category

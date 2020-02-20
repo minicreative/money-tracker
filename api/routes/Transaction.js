@@ -21,7 +21,7 @@ module.exports = router => {
 	 * @apiGroup Transaction
 	 * @apiDescription Lists transactions
 	 *
-	 * @apiSuccess {Object} transaction Transaction object
+	 * @apiSuccess {Array} transactions Transaction object array
 	 *
 	 * @apiUse Authorization
 	 * @apiUse Error
