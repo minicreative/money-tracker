@@ -15,8 +15,8 @@ import SettingsView from './views/SettingsView'
 
 // Icon setup
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faTrash } from '@fortawesome/free-solid-svg-icons'
-library.add(faTrash)
+import { faTrash, faPlusCircle } from '@fortawesome/free-solid-svg-icons'
+library.add(faTrash, faPlusCircle)
 
 // Create history
 const history = createBrowserHistory();
