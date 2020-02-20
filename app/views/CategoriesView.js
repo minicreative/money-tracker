@@ -2,6 +2,9 @@
 
 import React from 'react'
 import View from '../components/View';
+import Authentication from '../tools/Authentication'
+import Requests from '../tools/Requests'
+import Category from '../components/Category';
 
 export default class CategoriesView extends View {
 	constructor(props){
@@ -10,6 +13,7 @@ export default class CategoriesView extends View {
 
 	componentDidMount() {
 		this._isMounted = true
+		if (Authentication.getToken()) this.get()
 	}
 
 	componentWillUnmount() {
@@ -25,7 +29,7 @@ export default class CategoriesView extends View {
 	get() {
 		const { categories } = this.state
 		this.setState({ loading: true })
-		Requests.do('categories.list').then((response) => {
+		Requests.do('category.list').then((response) => {
 			if (response.categories) {
 				response.categories.forEach((category) => categories.push(category))
 			}
@@ -42,7 +46,12 @@ export default class CategoriesView extends View {
 				<div className="heading">
 					<h1>{"Categories"}</h1>
 				</div>
-				{categories.map((category) => <div className="category row">{category.name}</div>)}
+				<div className="row heading_row columns category">
+					<div className="column name">Name</div>
+					<div className="column parent">Parent Category</div>
+					<div className="column check"></div>
+				</div>
+				{categories.map((category) => <Category key={category.guid} category={category} />)}
 				{loading ? "Loading..." : null}
 				{error ? `Error: ${error}` : null}
 			</div>

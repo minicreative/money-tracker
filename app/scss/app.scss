@@ -166,6 +166,12 @@ header {
 	}
 }
 
+.category {
+	.name {width:45%;}
+	.parent {width:45%;}
+	.check {width:10%;}
+}
+
 // Fonts ====================================================================
 @font-face {
     font-family: 'Avenir';

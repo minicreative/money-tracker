@@ -48,7 +48,7 @@ module.exports = router => {
 				};
 				Database.page(pageOptions, (err, categories) => {
 					Secretary.addToResponse(res, "categories", categories);
-					callback(err, transactions)
+					callback(err)
 				})
 			},
 
@@ -204,6 +204,65 @@ module.exports = router => {
 					callback(err);
 				});
 			}
+		], err => next(err));
+	})
+
+	/**
+	 * @api {POST} /category.delete Delete
+	 * @apiName Delete
+	 * @apiGroup Category
+	 * @apiDescription Deletes and returns an existing category marked as erased
+	 *
+	 * @apiParam {String} guid Category GUID
+	 *
+	 * @apiSuccess {Object} category Category object
+	 *
+	 * @apiUse Authorization
+	 * @apiUse Error
+	 */
+	router.post('/category.delete', (req, res, next) => {
+		req.handled = true;
+
+		// Synchronously perform the following tasks...
+		Async.waterfall([
+
+			// Authenticate user
+			callback => {
+				Authentication.authenticateUser(req, function (err, token) {
+					callback(err);
+				});
+			},
+
+			// Validate parameters
+			(callback) => {
+				var validations = [
+					Validation.string('GUID', req.body.guid)
+				];
+				callback(Validation.catchErrors(validations))
+			},
+
+			// Find category to delete
+			(callback) => {
+				Database.findOne({
+					'model': Category,
+					'query': {
+						'guid': req.body.guid
+					}
+				}, (err, category) => {
+					if (!category) callback(Secretary.requestError(Messages.conflictErrors.objectNotFound));
+					else callback(err, category)
+				})
+			},
+
+			// Delete category, add to reply with "erased" property
+			(category, callback) => {
+				category.delete((err, category) => {
+					category.erased = true;
+					Secretary.addToResponse(res, "category", category)
+					callback(err);
+				});
+			}
+			
 		], err => next(err));
 	})
 

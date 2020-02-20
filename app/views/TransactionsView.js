@@ -10,6 +10,8 @@ import Moment from 'moment'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { TRANSACTIONS_PAGE_SIZE } from './../tools/Constants'
 
+let scrollForwarder
+
 export default class TransactionsView extends View {
 
 	constructor(props){
@@ -29,13 +31,13 @@ export default class TransactionsView extends View {
 	componentDidMount() {
 		this._isMounted = true
 		if (Authentication.getToken()) this.page()
-		this.scrollListener = window.addEventListener("scroll", e => {
-			this.handleScroll(e);
-		});
+		scrollForwarder = e => this.handleScroll(e)
+		window.addEventListener("scroll", scrollForwarder);
 	}
 
 	componentWillUnmount() {
 		this._isMounted = false
+		window.removeEventListener("scroll", scrollForwarder);
 	}
 
 	reload = () => {
