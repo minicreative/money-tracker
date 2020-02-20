@@ -60,8 +60,8 @@ export default class Category extends React.Component {
 		if (this._isMounted) this.setState({ edited: false, loading: true })
 		Requests.do('category.edit', request).then((response) => {
 			if (response.category) {
-				if (this.props.update) this.props.update(response.category)
-				if (this._isMounted) this.setState({ loading: false, fields: getFieldStateForCategory(response.transaction) })
+				this.props.update(response.category)
+				if (this._isMounted) this.setState({ loading: false, fields: getFieldStateForCategory(response.category) })
 			}
 		})
 	}
@@ -70,7 +70,7 @@ export default class Category extends React.Component {
 		if (this._isMounted) this.setState({ loading: true })
 		Requests.do('category.delete', { guid: this.props.category.guid }).then((response) => {
 			if (response.category) {
-				if (this.props.update) this.props.update(response.category)
+				this.props.update(response.category)
 			}
 		})
 	}
