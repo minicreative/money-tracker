@@ -91,8 +91,9 @@ module.exports = router => {
 				// Iterate through transactions
 				transactions.forEach(transaction => {
 
-					// Don't handle income
+					// Don't handle income or future transactions
 					if (transaction.amount > 0) return
+					if (Moment().isBefore(transaction.date*1000)) return
 
 					// Get month ID for transaction
 					const monthID = Moment(transaction.date*1000).startOf('month').format('X')

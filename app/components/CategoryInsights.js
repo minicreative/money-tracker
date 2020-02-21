@@ -28,7 +28,11 @@ export default class Category extends React.Component {
 									<td>{data.categoryNames[category]}</td>
 									<td>{Numeral(data.full[category]).format('$0,0.00')}</td>
 									{monthArray.map(([key]) => 
-										<td key={key}>{Numeral(data.monthly[key][category]).format('$0,0.00')}</td>)}
+										<td key={key}>{
+											data.monthly[key][category] != 0
+												? Numeral(data.monthly[key][category]).format('$0,0.00')
+												: null
+										}</td>)}
 								</tr>
 							)
 						})}
