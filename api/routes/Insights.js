@@ -71,10 +71,14 @@ module.exports = router => {
 			// Compile data
 			(transactions, categories, callback) => {
 
-				const categoryNames = {};
-				const categoryAmounts = {};
+				const categoryNames = {
+					total: "All spending"
+				};
+				const categoryAmounts = {
+					total: 0
+				};
 
-				// Iternate through categories
+				// Iterate through categories
 				categories.forEach(category => {
 					categoryNames[category.guid] = category.name;
 					categoryAmounts[category.guid] = 0
@@ -87,21 +91,30 @@ module.exports = router => {
 				// Iterate through transactions
 				transactions.forEach(transaction => {
 
+					// Don't handle income
+					if (transaction.amount > 0) return
+
 					// Get month ID for transaction
-					const monthID = Moment(transaction.date*1000).format('MMMM YYYY')
+					const monthID = Moment(transaction.date*1000).startOf('month').format('X')
 
 					// Initialize monthly object if applicable
 					if (!monthly[monthID]) monthly[monthID] = clone(categoryAmounts)
 
 					// Add to monthly
+					monthly[monthID].total += transaction.amount
 					monthly[monthID][transaction.category] += transaction.amount
 
 					// Add to full
+					full.total += transaction.amount
 					full[transaction.category] += transaction.amount
 				})
 
-				Secretary.addToResponse(res, "data", { categoryNames, full, monthly }, true)
+				// Remove empty categories
+				Object.entries(full).forEach(([categoryKey, amount]) => {
+					if (amount === 0) delete categoryNames[categoryKey]
+				})
 
+				Secretary.addToResponse(res, "data", { categoryNames, full, monthly }, true)
 				callback()
 			},
 

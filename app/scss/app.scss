@@ -64,7 +64,7 @@ body {
 	background:$bg;
 }
 
-// /fonts =====================================================================
+// Fonts =====================================================================
 body {
 	font-family:'Avenir', sans-serif; font-size:16px; color:$text; line-height:1.4;
 	@include breakpoint(s) {font-size:14px;}
@@ -149,6 +149,23 @@ header {
 		padding:0px $padding__;
 		.column {padding:0px 4px; line-height:30px; font-size:13px;}
 	}
+}
+.insight {
+	padding:0px 0px $padding_;
+	.insight-heading {padding:$padding_;}
+	.insight-table {display:block; width:100%; overflow-x:scroll;}
+	tr:nth-child(even) {background:$subtle_}
+	th, td {
+		padding:0px 14px; text-align:right;
+		&:first-child {padding-left:$padding_; text-align:left;}
+		&:last-child {padding-right:$padding_;}
+	}
+	th {
+		font-weight:400; font-size:13px; line-height:24px; text-transform:uppercase;
+		white-space:nowrap;
+	}
+	td {font-size:15px; font-weight:300; text-align:right; line-height:34px;}
+	tr.total td {font-weight:500;}
 }
 
 .transaction {
