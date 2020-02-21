@@ -7,7 +7,7 @@ const api = require('./api')
 // Start dependenies and listen to port
 async function start () {
 
-	process.enz.TZ = 'America/New_York'
+	process.env.TZ = 'America/New_York'
 
 	// Setup server
 	const server = Express()
