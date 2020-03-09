@@ -95,6 +95,9 @@ module.exports = router => {
 					if (transaction.amount > 0) return
 					if (Moment().isBefore(transaction.date*1000)) return
 
+					// Exclude gifts
+					if (req.body.excludeGifts && transaction.category === 'a2af8852-5f71-4009-9c37-070263452cc3') return
+
 					// Get month ID for transaction
 					const monthID = Moment(transaction.date*1000).startOf('month').format('X')
 
