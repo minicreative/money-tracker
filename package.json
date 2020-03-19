@@ -10,9 +10,8 @@
     "server:dev": "nodemon --watch api index.js",
     "dev": "npm-run-all -p app:dev server:dev",
     "build": "webpack --mode production",
-    "run": "nodemon index.js",
-    "start": "npm-run-all -s build run",
-    "start:full": "npm-run-all -s apidocs codedocs build run"
+    "build:full": "npm-run-all -s apidocs codedocs build",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
