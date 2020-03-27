@@ -31,6 +31,6 @@ before_deploy:
 deploy:
 - provider: script
   skip_cleanup: true
-  script: ssh $deploy_user@$deploy_host deploy.sh
+  script: ssh $deploy_user@$deploy_host /home/$deploy_user/deploy.sh
   on:
     branch: master
