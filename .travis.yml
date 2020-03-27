@@ -11,20 +11,20 @@ branches:
   - master
 
 install:
-  - npm install
-  - npm run build
-  - docker build -t $docker_hub_user/money-tracker:$TRAVIS_BUILD_NUMBER .
+  # - npm install
+  # - npm run build
+  # - docker build -t $docker_hub_user/money-tracker:$TRAVIS_BUILD_NUMBER .
 
 script:
   - echo "No tests for now"
   
 after_success:
-  - docker login --username=$docker_hub_user --password=$docker_hub_pass
-  - docker push $docker_hub_user/money-tracker:$TRAVIS_BUILD_NUMBER
+  # - docker login --username=$docker_hub_user --password=$docker_hub_pass
+  # - docker push $docker_hub_user/money-tracker:$TRAVIS_BUILD_NUMBER
 
 deploy:
   - provider: script
     skip_cleanup: true
-    script: source ./deploy/deploy.sh
+    script: ls
     on:
       branch: master
