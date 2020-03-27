@@ -1,13 +1,27 @@
 const Express = require('express')
 const Morgan = require('morgan')
 
-const config = require('./config')
 const api = require('./api')
+
+const REQUIRED_ENV = [
+	'mt_port',
+	'mt_secret',
+	'mt_mongo_host',
+	'mt_mongo_name',
+	'mt_mongo_user',
+	'mt_mongo_pass',
+];
 
 // Start dependenies and listen to port
 async function start () {
 
-	process.env.TZ = 'America/New_York'
+	// Check for required environment variables
+	for (const ev of REQUIRED_ENV) {
+		if (process.env[ev] === undefined) {
+			console.log(`Missing required env variable: ${ev}`)
+			return
+		}
+	}
 
 	// Setup server
 	const server = Express()
@@ -23,7 +37,7 @@ async function start () {
 	})
 
 	// Listen on port
-	server.listen(config.port, () => console.log(`money-tracker listening on port ${config.port}...`))
+	server.listen(process.env.mt_port, () => console.log(`money-tracker listening on port ${process.env.mt_port}...`))
 }
 
 start()

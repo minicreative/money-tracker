@@ -3,18 +3,15 @@
 ### Setup
 
 Do `npm install`  
-Create `./config.json` with the following format:
+
+Set the following environment variables:
 ```
-{
-	"port": 3000,
-	"database": {
-		"host": "127.0.0.1",
-		"name": "money-tracker",
-		"username": "user",
-		"password": "password"
-	},
-	"secret": "any-secret-string"
-}
+mt_port: port which Express server listens on
+mt_secret: secret used for authentication
+mt_mongo_host: MongoDB host address
+mt_mongo_name: MongoDB database name
+mt_mongo_user: MongoDB username
+mt_mongo_pass: MongoDB password
 ```
 
 ### Run

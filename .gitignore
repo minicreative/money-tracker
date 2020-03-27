@@ -2,5 +2,4 @@ node_modules
 public/src/*
 public/docs/*
 public/code/*
-config.json
 *.DS_Store

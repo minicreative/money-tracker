@@ -4,9 +4,6 @@
 // Import dependencies
 const Mongoose = require('mongoose')
 
-// Import config variables
-const { username, password, host, name } = require('./../../config').database
-
 module.exports = {
 
 	/**
@@ -93,10 +90,9 @@ module.exports = {
 	 * @param {function (err, object)} callback Callback function
 	 */
 	setup: () => {
-		process.stdout.write(`Connecting to Mongo at ${host}...`)
-		let auth = ''
-		if (username && password) auth = `${username}:${password}@`
-		return Mongoose.connect(`mongodb://${auth}${host}/${name}`, {
+		process.stdout.write(`Connecting to Mongo at ${process.env.mt_mongo_host}...`)
+		const auth = `${process.env.mt_mongo_user}:${process.env.mt_mongo_pass}`
+		return Mongoose.connect(`mongodb://${auth}@${process.env.mt_mongo_host}/${process.env.mt_mongo_name}`, {
 			useNewUrlParser: true,
 			useUnifiedTopology: true,
 			useCreateIndex: true,
