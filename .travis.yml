@@ -18,7 +18,7 @@ script:
 - echo "No tests for now"
 
 after_success:
-- docker login --username=$docker_hub_user --password=$docker_hub_pass
+- echo "$docker_hub_pass" | docker login -u "$docker_hub_user" --password-stdin
 - docker push $docker_hub_user/money-tracker:$TRAVIS_BUILD_NUMBER
 
 before_deploy:
@@ -31,6 +31,6 @@ before_deploy:
 deploy:
 - provider: script
   skip_cleanup: true
-  script: ssh $deploy_user@$deploy_host /home/$deploy_user/deploy.sh
+  script: ssh_deploy.sh $docker_hub_user/money-tracker:$TRAVIS_BUILD_NUMBER
   on:
     branch: master
