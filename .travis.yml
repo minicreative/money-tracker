@@ -22,7 +22,7 @@ after_success:
 - docker push $docker_hub_user/money-tracker:$TRAVIS_BUILD_NUMBER
 
 before_deploy:
-- ssh-keyscan -t $TRAVIS_SSH_KEY_TYPES -H $deploy_host 2>&1 | tee -a $HOME/.ssh/known_hosts
+- ssh-keyscan -H $deploy_host >> $HOME/.ssh/known_hosts
 - openssl aes-256-cbc -K $encrypted_db2095f63ba3_key -iv $encrypted_db2095f63ba3_iv -in deploy_rsa.enc -out /tmp/deploy_rsa -d
 - eval "$(ssh-agent -s)"
 - chmod 600 /tmp/deploy_rsa
