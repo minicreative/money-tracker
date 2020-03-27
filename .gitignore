@@ -3,3 +3,4 @@ public/src/*
 public/docs/*
 public/code/*
 *.DS_Store
+environment.sh

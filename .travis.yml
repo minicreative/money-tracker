@@ -9,5 +9,17 @@ branches:
   only:
   - master
 
-script:
-  - echo "This is a build"
+install:
+  - npm install
+  - npm run build
+  - docker build -t $docker_hub_user/money-tracker:$TRAVIS_BUILD_NUMBER .
+  
+after_success:
+  - docker login --username=$docker_hub_user --password=$docker_hub_pass
+  - docker push $docker_hub_user/money-tracker:$TRAVIS_BUILD_NUMBER
+
+deploy:
+  - provider: script
+    script: source deploy/deploy.sh
+    on:
+      branch: master
