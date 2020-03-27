@@ -13,6 +13,9 @@ install:
   - npm install
   - npm run build
   - docker build -t $docker_hub_user/money-tracker:$TRAVIS_BUILD_NUMBER .
+
+script:
+  - echo "No tests for now"
   
 after_success:
   - docker login --username=$docker_hub_user --password=$docker_hub_pass
