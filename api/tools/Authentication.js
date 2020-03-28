@@ -26,7 +26,7 @@ module.exports = {
 			'user': user.guid,
 			'exp': parseInt(Dates.fromNow(60, 'days')),
 		};
-		Token.sign(signedObject, process.env.mt_ecret, function (err, token) {
+		Token.sign(signedObject, process.env.mt_secret, function (err, token) {
 			callback(err, token);
 		});
 	},
