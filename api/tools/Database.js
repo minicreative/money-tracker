@@ -15,7 +15,7 @@ module.exports = {
 	 * @param {function (err, object)} callback Callback function
 	 */
 	findOne: ({model, query}, callback) => {
-		model.findOne(query, function (err, object) {
+		model.findOne(query, (err, object) => {
 			callback(err, object);
 		});
 	},
@@ -29,9 +29,35 @@ module.exports = {
 	 * @param {function (err, objects)} callback Callback function
 	 */
 	find: ({model, query}, callback) => {
-		model.find(query, function (err, objects) {
+		model.find(query, (err, objects) => {
 			callback(err, objects);
 		});
+	},
+
+	/**
+	 * Gets sum from field in model object for a query
+	 * @memberof tools/Database
+	 * @param {Object} params
+	 * @param {Object} params.model Mongoose model object
+	 * @param {Object} params.query MongoDB query object
+	 * @param {String} params.field Field to sum
+	 * @param {function (err, objects)} callback Callback function
+	 */
+	sum: ({model, field, query}, callback) => {
+		model.find(query).exec((err, objects) => {
+			let sum = 0;
+			for (var i in objects) sum += objects[i][field]
+			callback(err, sum);
+		});
+
+		// This is the better way, not working right now
+		// model.aggregate([
+		// 	{$match:{query}},
+		// 	{$group:{_id:null,total:{$sum:`$${field}`}}}
+		// ], (err, results) => {
+		// 	console.log(results)
+		// 	callback(err, results[0].total)
+		// })
 	},
 
 	/**
@@ -46,7 +72,7 @@ module.exports = {
 	 * @param {function (err, objects)} callback Callback function
 	 */
 	page: ({model, query, pageSize, sort, skip}, callback) => {
-		model.find(query).sort(sort).skip(skip).limit(pageSize).exec(function (err, objects) {
+		model.find(query).sort(sort).skip(skip).limit(pageSize).exec((err, objects) => {
 			callback(err, objects);
 		});
 	},
@@ -75,7 +101,7 @@ module.exports = {
 		if (!update.$setOnInsert) update.$setOnInsert = {}; // Make a setOnInsert operation if one isn't defined in the update
 
 		// Make query and update with Mongoose
-		model.findOneAndUpdate(query, update, options, function (err, object) {
+		model.findOneAndUpdate(query, update, options, (err, object) => {
 			callback(err, object);
 		});
 	},

@@ -3,6 +3,7 @@ import React from 'react'
 import Moment from 'moment'
 import Numeral from 'numeral'
 import Requests from '../tools/Requests'
+import CategorySelect from './CategorySelect'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { EDIT_TIMER } from '../tools/Constants'
 
@@ -118,6 +119,7 @@ export default class Transaction extends React.Component {
 					<input name="description" type="text" value={fields.description} onChange={this.handleChange} />
 				</div>
 				<div className={`column category ${errors.category ? 'error' : ''}`}>
+					{/* <CategorySelect name="category" value={fields.category} onChange={this.handleChange} /> */}
 					<input name="category" type="text" value={fields.category} onChange={this.handleChange} />
 				</div>
 				<div className={`column amount right ${errors.amount ? 'error' : ''}`}>

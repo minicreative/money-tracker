@@ -8,7 +8,8 @@ export const AUTH_LANDING = "/transactions"
 export const NO_AUTH_LANDING = "/login"
 
 // Sizes
-export const TRANSACTIONS_PAGE_SIZE = 200;
+export const TRANSACTIONS_PAGE_SIZE = 40
 
 // Timers
 export const EDIT_TIMER = 5000
+export const QUERY_TIMER = 500

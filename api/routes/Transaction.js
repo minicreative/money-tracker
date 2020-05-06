@@ -29,43 +29,69 @@ module.exports = router => {
 	router.post('/transaction.list', (req, res, next) => {
 		req.handled = true;
 
+		// Setup query
+		let query = {};
+
 		// Synchronously perform the following tasks...
 		Async.waterfall([
 
 			// Authenticate user
 			callback => {
 				Authentication.authenticateUser(req, function (err, token) {
-					callback(err, token);
+					query.user = token.user;
+					callback(err);
 				});
 			},
 
 			// Validate params
-			(token, callback) => {
+			callback => {
 				var validations = [];
 				if (req.body.pageSize) validations.push(Validation.pageSize('Page size', req.body.pageSize))
-				callback(Validation.catchErrors(validations), token)
+				if (req.body.description) validations.push(Validation.string('Description', req.body.description))
+				callback(Validation.catchErrors(validations))
 			},
 
-			// Find transactions for user
-			(token, callback) => {
+			// Find transactions
+			callback => {
+
+				// Setup page options
 				const pageOptions = {
 					model: Transaction,
 					sort: '-date',
 					pageSize: req.body.pageSize,
-					query: {
-						user: token.user,
-					},
 				};
+
+				// Add to query
+				if (req.body.description) {
+					query.description = new RegExp(req.body.description, 'i')
+				}
 				if (req.body.pageFrom) {
-					pageOptions.query.date = {
+					query.date = {
 						$lt: req.body.pageFrom
 					}
 				}
+
+				// Add query to page options
+				pageOptions.query = query;
+
+				// Page, add to response
 				Database.page(pageOptions, (err, transactions) => {
 					Secretary.addToResponse(res, "transactions", transactions);
-					callback(err, transactions)
+					callback(err)
 				})
 			},
+
+			// Get sum using query
+			callback => {
+				Database.sum({
+					model: Transaction,
+					field: 'amount',
+					query,
+				}, (err, sum) => {
+					Secretary.addToResponse(res, "sum", sum, true);
+					callback(err)
+				})
+			}
 
 		], err => next(err));
 	})

@@ -40,6 +40,7 @@
     "password-hash": "^1.2.2",
     "prop-types": "^15.7.2",
     "react": "^16.13.0",
+    "react-autosuggest": "^10.0.0",
     "react-context-hook": "^1.2.1",
     "react-dom": "^16.13.0",
     "react-router-dom": "^5.1.2",

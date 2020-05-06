@@ -16,4 +16,4 @@ mt_mongo_pass: MongoDB password
 
 ### Run
 `npm run dev` to watch serve and watch UI and API in paralell  
-`npm run start` to build application and start server demon
+`npm run start` to start application

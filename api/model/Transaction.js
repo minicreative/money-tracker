@@ -30,7 +30,7 @@ function TransactionProperties (schema) {
 		'category': {
 			'type': String,
 		}
-    });
+	});
 };
 
 function TransactionStaticMethods (schema) {

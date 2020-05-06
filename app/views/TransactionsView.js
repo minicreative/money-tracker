@@ -7,8 +7,9 @@ import Requests from '../tools/Requests'
 import View from '../components/View'
 import Transaction from '../components/Transaction'
 import Moment from 'moment'
+import Numeral from 'numeral'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { TRANSACTIONS_PAGE_SIZE } from './../tools/Constants'
+import { TRANSACTIONS_PAGE_SIZE, QUERY_TIMER } from './../tools/Constants'
 
 let scrollForwarder
 
@@ -19,13 +20,18 @@ export default class TransactionsView extends View {
 		this.page = this.page.bind(this)
 		this.update = this.update.bind(this)
 		this.createTransaction = this.createTransaction.bind(this)
+		this.handleQueryChange = this.handleQueryChange.bind(this)
 	}
 
 	state = {
+		sum: 0,
 		transactions: [],
 		loading: false,
 		error: null,
 		exhausted: false,
+		query: {
+			description: ''
+		}
 	}
 
 	componentDidMount() {
@@ -68,7 +74,7 @@ export default class TransactionsView extends View {
 	}
 
 	page() {
-		const { transactions } = this.state
+		const { transactions, query } = this.state
 
 		// Get true last transaction
 		let lastTransaction
@@ -80,13 +86,20 @@ export default class TransactionsView extends View {
 		Requests.do('transaction.list', { 
 			pageSize: TRANSACTIONS_PAGE_SIZE, 
 			pageFrom: lastTransaction ? lastTransaction.date : undefined,
+			description: query.description,
 		}).then((response) => {
 			let exhausted = false;
 			if (response.transactions) {
 				if (response.transactions.length < TRANSACTIONS_PAGE_SIZE) exhausted = true;
 				response.transactions.forEach((transaction) => transactions.push(transaction))
 			}
-			if (this._isMounted) this.setState({ transactions, exhausted, loading: false, error: null })
+			if (this._isMounted) this.setState({
+				sum: response.sum,
+				transactions, 
+				exhausted, 
+				loading: false,
+				error: null
+			})
 		}).catch((response) => {
 			if (this._isMounted) this.setState({ loading: false, error: response.message })
 		})
@@ -121,14 +134,28 @@ export default class TransactionsView extends View {
 
 		this.setState({ transactions })
 	}
+
+	handleQueryChange(event) {
+		this.lastQueryChange = Date.now()
+		console.log(this.lastQueryChange)
+		const { query } = this.state
+		query[event.target.name] = event.target.value
+		if (this._isMounted) this.setState({ query })
+
+		setTimeout(() => {
+			if (Date.now()-this.lastQueryChange > QUERY_TIMER) this.reload()
+		}, QUERY_TIMER)
+	}
 	
 	render() {
-		const { loading, error, exhausted, transactions } = this.state;
+		const { loading, error, exhausted, transactions, query, sum } = this.state;
 		return (
 			<div className="view">
 				<div className="heading">
 					<FontAwesomeIcon icon="plus-circle" className="button" onClick={this.createTransaction} />
 					<h1>{"Transactions"}</h1>
+					<input type="text" name="description" value={query.description} onChange={this.handleQueryChange} />
+					<p>{`Total: ${Numeral(sum).format('$0,0.00')}`}</p>
 				</div>
 				<div className="row heading_row columns transaction">
 					<div className="column date">Date</div>
