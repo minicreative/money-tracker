@@ -161,7 +161,7 @@ function TransactionInstanceMethods (schema) {
 	};
 
 	/**
-	 * Updates an existing transaction
+	 * Formats an existing transaction for the client
 	 * @memberof model/Transaction
 	 * @param {function(err, transaction)} callback Callback function
 	 */

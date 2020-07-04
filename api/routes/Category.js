@@ -88,6 +88,7 @@ module.exports = router => {
 					Validation.string('Name', req.body.name),
 				];
 				if (req.body.parent) validations.push(Validation.string('Parent', req.body.parent))
+				if (req.body.parentName) validations.push(Validation.string('Parent name', req.body.parentName))
 				callback(Validation.catchErrors(validations), token)
 			},
 
@@ -102,6 +103,13 @@ module.exports = router => {
 					}, (err, parent) => {
 						if (!parent) callback(Secretary.requestError(Messages.conflictErrors.parentCategoryNotFound));
 						else callback(err, token, parent)
+					})
+				} else if (req.body.parentName && req.body.parentName.length > 0) { // Need to figure this out
+					Category.findOrCreate({
+						'user': token.user,
+						'name': req.body.parentName,
+					}, (err, parent) => {
+						callback(err, token, parent)
 					})
 				} else callback(null, token, null);
 			},
@@ -156,14 +164,9 @@ module.exports = router => {
 				];
 				if (req.body.name) validations.push(Validation.string('Name', req.body.name))
 				if (req.body.parent) validations.push(Validation.string('Parent', req.body.parent))
-				callback(Validation.catchErrors(validations), token)
-			},
-
-			// Data validation
-			(token, callback) => {
 				if (req.body.guid === req.body.parent)
 					return callback(Secretary.requestError(Messages.conflictErrors.invalidParentCategory))
-				callback(null, token)
+				callback(Validation.catchErrors(validations), token)
 			},
 
 			// Find category to edit
@@ -191,6 +194,13 @@ module.exports = router => {
 						if (!parent) callback(Secretary.requestError(Messages.conflictErrors.parentCategoryNotFound));
 						else callback(err, token, category, parent)
 					})
+				} else if (req.body.parentName && req.body.parentName.length > 0) { // Need to figure this out
+					Category.findOrCreate({
+						'user': token.user,
+						'name': req.body.parentName,
+					}, (err, parent) => {
+						callback(err, token, category, parent)
+					})
 				} else callback(null, token, category, null);
 			},
 
@@ -198,7 +208,7 @@ module.exports = router => {
 			(token, category, parent, callback) => {
 				category.edit({
 					'name': req.body.name,
-					'parent': req.body.parent,
+					'parent': parent ? parent.guid : null,
 				}, (err, category) => {
 					Secretary.addToResponse(res, 'category', category)
 					callback(err);

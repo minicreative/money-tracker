@@ -1,14 +1,12 @@
 /** @namespace routes/Insights */
 
 const Async = require('async')
-const Papa = require('papaparse')
 const Moment = require('moment')
 
 const Database = require('./../tools/Database')
-const Validation = require('./../tools/Validation')
 const Secretary = require('./../tools/Secretary')
-const Messages = require('./../tools/Messages')
 const Authentication = require('./../tools/Authentication')
+const Dates = require('./../tools/Dates')
 
 const Transaction = require('./../model/Transaction')
 const Category = require('./../model/Category')
@@ -71,15 +69,18 @@ module.exports = router => {
 			// Compile data
 			(transactions, categories, callback) => {
 
+				const parentsOnly = req.body.parentCategoriesOnly;
 				const categoryNames = {
 					total: "All spending"
 				};
 				const categoryAmounts = {
 					total: 0
 				};
+				const categoryParents = {}
 
 				// Iterate through categories
 				categories.forEach(category => {
+					categoryParents[category.guid] = category.parent;
 					categoryNames[category.guid] = category.name;
 					categoryAmounts[category.guid] = 0
 				})
@@ -88,12 +89,20 @@ module.exports = router => {
 				const full = clone(categoryAmounts)
 				const monthly = {}
 
+				// Setup first transaction
+				let firstTransactionTime = Dates.now();
+
 				// Iterate through transactions
 				transactions.forEach(transaction => {
 
 					// Don't handle income or future transactions
 					if (transaction.amount > 0) return
 					if (Moment().isBefore(transaction.date*1000)) return
+
+					// Track first transaction time
+					if (transaction.date < firstTransactionTime) {
+						firstTransactionTime = transaction.date
+					}
 
 					// Exclude gifts
 					if (req.body.excludeGifts && transaction.category === 'a2af8852-5f71-4009-9c37-070263452cc3') return
@@ -104,21 +113,41 @@ module.exports = router => {
 					// Initialize monthly object if applicable
 					if (!monthly[monthID]) monthly[monthID] = clone(categoryAmounts)
 
+					// Get transaction category if parents only
+					var parentCategory
+					if (parentsOnly) {
+						parentCategory = categoryParents[transaction.category]
+					}
+
 					// Add to monthly
 					monthly[monthID].total += transaction.amount
-					monthly[monthID][transaction.category] += transaction.amount
+					if (parentsOnly && parentCategory) monthly[monthID][parentCategory] += transaction.amount
+					else monthly[monthID][transaction.category] += transaction.amount
 
 					// Add to full
 					full.total += transaction.amount
-					full[transaction.category] += transaction.amount
+					if (parentsOnly && parentCategory) full[parentCategory] += transaction.amount
+					else full[transaction.category] += transaction.amount
 				})
 
-				// Remove empty categories
+				// Remove empty categories, create averages
+				const monthCount = Moment().diff(Moment(firstTransactionTime*1000), 'months', true)
+				const dayCount = Moment().diff(Moment(firstTransactionTime*1000), 'days', true)
+				const monthAverage = {
+					total: full.total / monthCount
+				}
+				const dayAverage = {
+					total: full.total / dayCount
+				}
 				Object.entries(full).forEach(([categoryKey, amount]) => {
 					if (amount === 0) delete categoryNames[categoryKey]
+					else {
+						dayAverage[categoryKey] = full[categoryKey] / dayCount
+						monthAverage[categoryKey] = full[categoryKey] / monthCount
+					}
 				})
 
-				Secretary.addToResponse(res, "data", { categoryNames, full, monthly }, true)
+				Secretary.addToResponse(res, "data", { categoryNames, full, monthly, monthAverage, dayAverage }, true)
 				callback()
 			},
 

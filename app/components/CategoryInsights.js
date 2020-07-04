@@ -10,11 +10,13 @@ export default class Category extends React.Component {
 	constructor(props) {
 		super(props)
 		this.handleExcludeGifts = this.handleExcludeGifts.bind(this);
+		this.handleParentCategoriesOnly = this.handleParentCategoriesOnly.bind(this);
 	}
 
 	state = {
 		loading: false,
 		excludeGifts: false,
+		parentCategoriesOnly: false,
 	}
 
 	componentDidMount() {
@@ -22,10 +24,10 @@ export default class Category extends React.Component {
 	}
 
 	get() {
-		const { excludeGifts } = this.state
+		const { excludeGifts, parentCategoriesOnly } = this.state
 		this.setState({ loading: true })
 		Requests.do('insights.category', {
-			excludeGifts,
+			excludeGifts, parentCategoriesOnly,
 		}).then((response) => {
 			this.setState({ loading: false, data: response.data });
 		})
@@ -35,8 +37,12 @@ export default class Category extends React.Component {
 		this.setState({ excludeGifts: event.target.checked }, this.get)
 	}
 
+	handleParentCategoriesOnly(event) {
+		this.setState({ parentCategoriesOnly: event.target.checked }, this.get)
+	}
+
 	render() {
-		const { data, loading, excludeGifts } = this.state
+		const { data, loading, excludeGifts, parentCategoriesOnly } = this.state
 
 		let monthArray, fullArray
 		if (data) {
@@ -48,6 +54,7 @@ export default class Category extends React.Component {
 			<div className="insight-heading">
 				<h2>{"Spending by Category"}</h2>
 				<input type="checkbox" checked={excludeGifts} onChange={this.handleExcludeGifts} />{"Exclude gifts"}
+				<input type="checkbox" checked={parentCategoriesOnly} onChange={this.handleParentCategoriesOnly} />{"Group subcategories"}
 			</div>
 			{loading && "Loading..."}
 			{data && <div className="insight-table">
@@ -55,9 +62,11 @@ export default class Category extends React.Component {
 					<thead>
 						<tr>
 							<th>{"Category"}</th>
-							<th>{"All Time"}</th>
+							<th>{"Avg. Month"}</th>
 							{monthArray.map(([key]) => 
 								<th key={key}>{Moment(parseInt(key)*1000).format('MMM YYYY')}</th>)}
+							<th>{"All Time"}</th>
+							<th>{"Avg. Day"}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -65,13 +74,15 @@ export default class Category extends React.Component {
 							if (data.categoryNames[category]) return (
 								<tr className={category === 'total' ? "total" : null} key={category}>
 									<td>{data.categoryNames[category]}</td>
-									<td>{Numeral(data.full[category]).format('$0,0.00')}</td>
+									<td>{Numeral(data.monthAverage[category]).format('$0,0.00')}</td>
 									{monthArray.map(([key]) => 
 										<td key={key}>{
 											data.monthly[key][category] != 0
 												? Numeral(data.monthly[key][category]).format('$0,0.00')
 												: null
 										}</td>)}
+									<td>{Numeral(data.full[category]).format('$0,0.00')}</td>
+									<td>{Numeral(data.dayAverage[category]).format('$0,0.00')}</td>
 								</tr>
 							)
 						})}

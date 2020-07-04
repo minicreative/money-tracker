@@ -7,7 +7,7 @@ import { EDIT_TIMER } from '../tools/Constants'
 function getFieldStateForCategory (category) {
 	return {
 		name: category.name ? category.name : '',
-		parent: '',
+		parent: category.parentName ? category.parentName : '',
 	}
 }
 
@@ -52,10 +52,10 @@ export default class Category extends React.Component {
 
 	update() {
 		const { fields } = this.state
-		const errors = {}
 		const request = {
 			guid: this.props.category.guid,
 			name: fields.name,
+			parentName: fields.parent,
 		}
 		if (this._isMounted) this.setState({ edited: false, loading: true })
 		Requests.do('category.edit', request).then((response) => {

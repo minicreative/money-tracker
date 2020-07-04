@@ -133,13 +133,16 @@ function CategoryInstanceMethods (schema) {
 		};
 
 		// Setup database update
+		var unset = {}
 		var set = {
 			'lastModified': Dates.now(),
-			'parent': parent
 		};
 		if (name) set.name = name;
+		if (parent === null) unset.parent = "";
+		else if (parent) set.parent = parent;
 		var update = {
-			'$set': set
+			'$set': set,
+			'$unset': unset
 		};
 
 		// Make database update
@@ -150,6 +153,39 @@ function CategoryInstanceMethods (schema) {
 		}, function (err, category) {
 			callback(err, category);
 		});
+	};
+
+	/**
+	 * Formats an existing category for the client
+	 * @memberof model/Category
+	 * @param {function(err, category)} callback Callback function
+	 */
+	schema.methods.format = function (callback) {
+
+		// Initialize formatted object
+		const thisObject = this.toObject();
+		const model = Mongoose.model('Category');
+
+		Async.waterfall([
+
+			// Attach parent category metadata
+			function (callback) {
+				Database.findOne({
+					'model': model,
+					'query': {
+						'guid': thisObject.parent,
+					}
+				}, function (err, parent) {
+					if (parent) {
+						thisObject.parentName = parent.name;
+					}
+					callback();
+				});
+			},
+
+		], function (err) {
+			callback(err, thisObject);
+		})
 	};
 
 };
