@@ -9,9 +9,10 @@ const Validation = require('./../tools/Validation')
 const Secretary = require('./../tools/Secretary')
 const Messages = require('./../tools/Messages')
 const Authentication = require('./../tools/Authentication')
-
 const Transaction = require('./../model/Transaction')
 const Category = require('./../model/Category')
+const Paging = require('../tools/Paging')
+const Filter = require('../tools/Filter')
 
 module.exports = router => {
 
@@ -20,7 +21,9 @@ module.exports = router => {
 	 * @apiName List
 	 * @apiGroup Transaction
 	 * @apiDescription Lists transactions
-	 *
+	 * @apiUse TransactionFilter
+	 * @apiUse Paging
+	 * 
 	 * @apiSuccess {Array} transactions Transaction object array
 	 *
 	 * @apiUse Authorization
@@ -46,43 +49,62 @@ module.exports = router => {
 			// Validate params
 			callback => {
 				var validations = [];
-				if (req.body.pageSize) validations.push(Validation.pageSize('Page size', req.body.pageSize))
-				if (req.body.description) validations.push(Validation.string('Description', req.body.description))
+				Paging.validatePageRequest(req.body, validations)
+				Filter.validateTransactionsRequest(req.body, validations)
 				callback(Validation.catchErrors(validations))
 			},
 
 			// Find transactions
 			callback => {
-
-				// Setup page options
-				const pageOptions = {
-					model: Transaction,
-					sort: '-date',
-					pageSize: req.body.pageSize,
-				};
-
-				// Add to query
-				if (req.body.description) {
-					query.description = new RegExp(req.body.description, 'i')
-				}
-				if (req.body.pageFrom) {
-					query.date = {
-						$lt: req.body.pageFrom
-					}
-				}
-
-				// Add query to page options
-				pageOptions.query = query;
-
-				// Page, add to response
-				Database.page(pageOptions, (err, transactions) => {
-					Secretary.addToResponse(res, "transactions", transactions);
+				Filter.filterForTransactionsRequest(query, req.body)
+				Paging.page(Transaction, req.body, query, (err, transactions) => {
+					Secretary.addToResponse(res, "transactions", transactions)
 					callback(err)
 				})
 			},
 
-			// Get sum using query
+		], err => next(err));
+	})
+
+	/**
+	 * @api {POST} /transaction.sum Sum
+	 * @apiName Sum
+	 * @apiGroup Transaction
+	 * @apiDescription Sums transactions
+	 * @apiUse TransactionFilter
+	 * 
+	 * @apiSuccess {Array} transactions Transaction object array
+	 *
+	 * @apiUse Authorization
+	 * @apiUse Error
+	 */
+	router.post('/transaction.sum', (req, res, next) => {
+		req.handled = true;
+
+		// Setup query
+		let query = {}
+
+		// Synchronously perform the following tasks...
+		Async.waterfall([
+
+			// Authenticate user
 			callback => {
+				Authentication.authenticateUser(req, function (err, token) {
+					query.user = token.user;
+					callback(err);
+				});
+			},
+
+			// Validate params
+			callback => {
+				var validations = [];
+				Filter.validateTransactionsRequest(req.body, validations)
+				callback(Validation.catchErrors(validations))
+			},
+
+			// Sum transactions
+			callback => {
+				Filter.filterForTransactionsRequest(query, req.body)
 				Database.sum({
 					model: Transaction,
 					field: 'amount',
@@ -91,7 +113,7 @@ module.exports = router => {
 					Secretary.addToResponse(res, "sum", sum, true);
 					callback(err)
 				})
-			}
+			},
 
 		], err => next(err));
 	})

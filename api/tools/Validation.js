@@ -177,12 +177,13 @@ module.exports.currency = function (name, input) {
  * @memberof tools/Validation
  * @param {String} name Name of field
  * @param {Number} input Field input
+ * @param {Number} maxPageSize Maxiumum page size
  * @return {Object} Error message (or null)
  */
-module.exports.pageSize = function (name, input) {
+module.exports.pageSize = function (name, input, maxPageSize) {
 	return getNamedErrorFromArray([
 		isInvalidNumber(input),
-		isInvalidSize(input, 1, 2000),
+		isInvalidSize(input, 1, maxPageSize),
 	], name);
 };
 

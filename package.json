@@ -4,7 +4,7 @@
   "description": "Simple JS app for keeping track of spending",
   "main": "index.js",
   "scripts": {
-    "apidocs": "apidoc -i api/routes/ -o public/docs/",
+    "apidocs": "apidoc -i api -o public/docs/",
     "codedocs": "jsdoc -c jsdoc.json -d public/code/",
     "app:dev": "webpack --watch --mode development",
     "server:dev": "nodemon --watch api index.js",

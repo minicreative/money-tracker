@@ -1,6 +1,7 @@
 {
     "source": {
         "include": ["api", "app"],
-        "includePattern": ".js"
+        "includePattern": ".js",
+        "excludePattern": ".json"
     }
 }
