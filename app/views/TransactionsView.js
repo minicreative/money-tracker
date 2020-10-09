@@ -1,4 +1,4 @@
-/** @namespace views/TransactionView */
+/** @namespace app/views/TransactionView */
 
 import React from 'react'
 
