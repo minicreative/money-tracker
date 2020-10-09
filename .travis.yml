@@ -11,7 +11,7 @@ branches:
 
 install:
 - npm install
-- npm run build
+- npm run build:full
 - docker build -t $docker_hub_user/money-tracker:$TRAVIS_BUILD_NUMBER .
 
 script:
