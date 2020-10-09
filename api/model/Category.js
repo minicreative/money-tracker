@@ -1,4 +1,4 @@
-/** @namespace model/Category */
+/** @namespace api/model/Category */
 
 // Initialize dependencies
 const Mongoose = require('mongoose');
@@ -29,7 +29,7 @@ function CategoryStaticMethods (schema) {
 
 	/**
 	 * Creates a new Category in the database
-	 * @memberof model/Category
+	 * @memberof api/model/Category
 	 * @param {Object} params
 	 * @param {String} params.user User GUID
 	 * @param {String} params.name Name
@@ -88,7 +88,7 @@ function CategoryStaticMethods (schema) {
 
 	/**
 	 * Finds an existing a new Category in the database
-	 * @memberof model/Category
+	 * @memberof api/model/Category
 	 * @param {Object} params
 	 * @param {String} params.user User GUID
 	 * @param {String} params.name Name
@@ -116,7 +116,7 @@ function CategoryInstanceMethods (schema) {
 
 	/**
 	 * Updates an existing category
-	 * @memberof model/Category
+	 * @memberof api/model/Category
 	 * @param {Object} params
 	 * @param {String} [params.name] Name
 	 * @param {String} [params.parent] Parent
@@ -157,7 +157,7 @@ function CategoryInstanceMethods (schema) {
 
 	/**
 	 * Formats an existing category for the client
-	 * @memberof model/Category
+	 * @memberof api/model/Category
 	 * @param {function(err, category)} callback Callback function
 	 */
 	schema.methods.format = function (callback) {

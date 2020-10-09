@@ -1,4 +1,4 @@
-/** @namespace routes/Insights */
+/** @namespace api/routes/Insights */
 
 const Async = require('async')
 const Moment = require('moment')

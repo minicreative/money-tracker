@@ -1,4 +1,4 @@
-/** @namespace tools/Dates */
+/** @namespace api/tools/Dates */
 // Dates.js: provides tools for generating / handling dates
 
 // Initialize dependencies
@@ -8,7 +8,7 @@ module.exports = {
 
 	/**
 	 * Gets the current time
-	 * @memberof tools/Dates
+	 * @memberof api/tools/Dates
 	 * @return {Number} UNIX Timestamp of current moment
 	 */
 	now: function () {
@@ -17,7 +17,7 @@ module.exports = {
 
 	/**
 	 * Gets an exact time in the future based on current time
-	 * @memberof tools/Dates
+	 * @memberof api/tools/Dates
 	 * @param {Number} num Number of time units to add to current time
 	 * @param {String} string Time units identifier
 	 * @return {Number} UNIX Timestamp

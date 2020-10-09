@@ -1,4 +1,4 @@
-/** @namespace model/Transaction */
+/** @namespace api/model/Transaction */
 
 // Initialize dependencies
 const Mongoose = require('mongoose')
@@ -37,7 +37,7 @@ function TransactionStaticMethods (schema) {
 
 	/**
 	 * Creates a new transaction in the database
-	 * @memberof model/Transaction
+	 * @memberof api/model/Transaction
 	 * @param {Object} params
 	 * @param {String} params.user User GUID
 	 * @param {String} params.description Description
@@ -103,7 +103,7 @@ function TransactionInstanceMethods (schema) {
 
 	/**
 	 * Updates an existing transaction
-	 * @memberof model/Transaction
+	 * @memberof api/model/Transaction
 	 * @param {Object} params
 	 * @param {String} [params.description] Description
 	 * @param {Number} [params.date] Date
@@ -145,7 +145,7 @@ function TransactionInstanceMethods (schema) {
 
 	/**
 	 * Deletes an existing transaction
-	 * @memberof model/Transaction
+	 * @memberof api/model/Transaction
 	 * @param {function(err, transaction)} callback Callback function
 	 */
 	schema.methods.delete = function (callback) {
@@ -162,7 +162,7 @@ function TransactionInstanceMethods (schema) {
 
 	/**
 	 * Formats an existing transaction for the client
-	 * @memberof model/Transaction
+	 * @memberof api/model/Transaction
 	 * @param {function(err, transaction)} callback Callback function
 	 */
 	schema.methods.format = function (callback) {

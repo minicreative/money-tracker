@@ -1,4 +1,4 @@
-/** @namespace tools/Authentication */
+/** @namespace api/tools/Authentication */
 // Authentication.js: authenticates user
 
 // Initialize dependencies
@@ -17,7 +17,7 @@ module.exports = {
 
 	/**
 	 * Creates a token using a user object
-	 * @memberof tools/Authentication
+	 * @memberof api/tools/Authentication
 	 * @param {object} user User model object
 	 * @param {function(err, encodedToken)} callback Callback function
 	*/
@@ -33,7 +33,7 @@ module.exports = {
 
 	/**
 	 * Produces an authentication error or returns a decoded token for a user
-	 * @memberof tools/Authentication
+	 * @memberof api/tools/Authentication
 	 * @param {object} request Express.js request object
 	 * @param {function(err, decodedToken)} callback Callback function
 	 */

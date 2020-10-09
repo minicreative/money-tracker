@@ -1,4 +1,4 @@
-/** @namespace components/Field */
+/** @namespace app/components/Field */
 import React from 'react'
 
 const renderElement = props => {

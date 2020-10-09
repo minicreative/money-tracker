@@ -1,11 +1,11 @@
-/** @namespace tools/Validation */
+/** @namespace app/tools/Validation */
 
 const emailRegex = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
 
 const Validation = {
 
 	/**
-	 * @memberof modules/Validation Updates state parameter with keyed errors
+	 * @memberof app/tools/Validation Updates state parameter with keyed errors
 	 * @param {object} fields Object of field configurations
 	 * @param {object} state Form state containing field values
 	 */
@@ -17,7 +17,7 @@ const Validation = {
 	},
 
 	/**
-	 * @memberof modules/Validation
+	 * @memberof app/tools/Validation
 	 * @param {object} fields Object of field configurations
 	 * @param {object} state Form state containing field values
 	 */
@@ -32,7 +32,7 @@ const Validation = {
 	},
 
 	/**
-	 * @memberof modules/Validation
+	 * @memberof app/tools/Validation
 	 * @param {object} fields Object of field configurations
 	 * @param {object} state Form state containing field values
 	 */
@@ -45,7 +45,7 @@ const Validation = {
 	},
 
 	/**
-	 * @memberof modules/Validation
+	 * @memberof app/tools/Validation
 	 * @param {object} fields Object of field configurations
 	 * @param {object} state Form state containing field values
 	 */

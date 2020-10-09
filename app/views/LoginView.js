@@ -1,4 +1,4 @@
-/** @namespace views/LoginView */
+/** @namespace app/views/LoginView */
 
 import React from 'react'
 import { Link } from 'react-router-dom'

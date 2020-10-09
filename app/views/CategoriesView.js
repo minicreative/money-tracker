@@ -1,4 +1,4 @@
-/** @namespace views/CategoriesView */
+/** @namespace app/views/CategoriesView */
 
 import React from 'react'
 import View from '../components/View';

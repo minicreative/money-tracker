@@ -1,4 +1,4 @@
-/** @namespace routes/Transaction */
+/** @namespace api/routes/Transaction */
 
 const Async = require('async')
 const Papa = require('papaparse')

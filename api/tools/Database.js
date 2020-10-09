@@ -1,4 +1,4 @@
-/** @namespace tools/Database */
+/** @namespace api/tools/Database */
 // Database.js: provides tools for accessing / updating the database
 
 // Import dependencies
@@ -8,7 +8,7 @@ module.exports = {
 
 	/**
 	 * Finds a single object in the database using model
-	 * @memberof tools/Database
+	 * @memberof api/tools/Database
 	 * @param {Object} params
 	 * @param {Object} params.model Mongoose model object
 	 * @param {Object} params.query MongoDB query object
@@ -22,7 +22,7 @@ module.exports = {
 
 	/**
 	 * Finds all objects in the database for a query using model
-	 * @memberof tools/Database
+	 * @memberof api/tools/Database
 	 * @param {Object} params
 	 * @param {Object} params.model Mongoose model object
 	 * @param {Object} params.query MongoDB query object
@@ -36,7 +36,7 @@ module.exports = {
 
 	/**
 	 * Gets sum from field in model object for a query
-	 * @memberof tools/Database
+	 * @memberof api/tools/Database
 	 * @param {Object} params
 	 * @param {Object} params.model Mongoose model object
 	 * @param {Object} params.query MongoDB query object
@@ -62,7 +62,7 @@ module.exports = {
 
 	/**
 	 * Finds a limited, sorted list of objects in the database using model
-	 * @memberof tools/Database
+	 * @memberof api/tools/Database
 	 * @param {Object} params
 	 * @param {Object} params.model Mongoose model object
 	 * @param {Object} params.query MongoDB query object
@@ -79,7 +79,7 @@ module.exports = {
 
 	/**
 	 * Queries and updates an object in the database using model
-	 * @memberof tools/Database
+	 * @memberof api/tools/Database
 	 * @param {Object} params
 	 * @param {Object} params.model Mongoose model object
 	 * @param {Object} params.query MongoDB query object
@@ -108,7 +108,7 @@ module.exports = {
 
 	/**
 	 * Queries and updates an object in the database using model
-	 * @memberof tools/Database
+	 * @memberof api/tools/Database
 	 * @param {Object} params
 	 * @param {Object} params.model Mongoose model object
 	 * @param {Object} params.query MongoDB query object

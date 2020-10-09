@@ -1,4 +1,4 @@
-/** @namespace views/InsightsView */
+/** @namespace app/views/InsightsView */
 
 import React from 'react'
 import View from '../components/View';

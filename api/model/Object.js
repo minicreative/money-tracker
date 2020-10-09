@@ -1,4 +1,4 @@
-/** @namespace model/Object */
+/** @namespace api/model/Object */
 
 // Initialize dependencies
 const Uuid = require('uuid');
@@ -40,7 +40,7 @@ function ObjectInstanceMethods (schema) {
 
 	/**
 	 * Formats an existing object
-	 * @memberof model/Object
+	 * @memberof api/model/Object
 	 * @param {function(err, object)} callback Callback function
 	 */
 	schema.methods.format = function (callback) {
@@ -53,7 +53,7 @@ function ObjectStaticMethods (schema) {
 
 	/**
 	 * Generates a guaranteed unique GUID for a Mongo collection
-	 * @memberof model/Object
+	 * @memberof api/model/Object
 	 * @param {function(err, GUID)} callback Callback function
 	 */
 	schema.statics.GUID = function (callback) {

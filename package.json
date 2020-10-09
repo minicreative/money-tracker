@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "apidocs": "apidoc -i api -o public/docs/",
-    "codedocs": "jsdoc -c jsdoc.json -d public/code/",
+    "codedocs": "jsdoc -r -c jsdoc.json -d public/code/",
     "app:dev": "webpack --watch --mode development",
     "server:dev": "nodemon --watch api index.js",
     "dev": "npm-run-all -p app:dev server:dev",

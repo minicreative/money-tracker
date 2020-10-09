@@ -1,4 +1,4 @@
-/** @namespace tools/Authentication */
+/** @namespace app/tools/Authentication */
 import Storage from './Storage';
 
 export default {

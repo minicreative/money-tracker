@@ -1,4 +1,4 @@
-/** @namespace tools/Filter */
+/** @namespace api/tools/Filter */
 // Filter.js: provides filtering tools
 
 /**
@@ -14,7 +14,7 @@
 module.exports = {
 
 	/**
-	 * @memberof tools/Filter
+	 * @memberof api/tools/Filter
 	 * @param body Request body
      * @param validations Array of validation errors
 	 */
@@ -24,7 +24,7 @@ module.exports = {
 
 	/**
 	 * Updates query with transactions filters
-	 * @memberof tools/Filter
+	 * @memberof api/tools/Filter
      * @param {Object} body Request body
 	 */
 	filterForTransactionsRequest: function (query, body) {

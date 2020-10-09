@@ -1,4 +1,4 @@
-/** @namespace components/Category */
+/** @namespace app/components/Category */
 import React from 'react'
 import Numeral from 'numeral'
 import Moment from 'moment'

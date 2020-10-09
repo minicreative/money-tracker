@@ -1,4 +1,4 @@
-/** @namespace tools/Requests */
+/** @namespace app/tools/Requests */
 import Request from 'request'
 import Authentication from './Authentication'
 
@@ -6,7 +6,7 @@ const Requests = {
 
 	/**
 	 * Performs API request, stores the user and token properties of a response from the server
-	 * @memberof modules/Requests
+	 * @memberof app/tools/Requests
 	 * @param {String} endpoint Endpoint to append to base API address (no slashes)
 	 * @param {Object} body JSON object to send as POST request body
 	 * @param {Function} callback Callback: function (error, body)

@@ -1,4 +1,4 @@
-/** @namespace routes/Category */
+/** @namespace api/routes/Category */
 
 const Async = require('async')
 

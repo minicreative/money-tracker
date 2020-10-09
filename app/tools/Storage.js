@@ -1,10 +1,10 @@
-/** @namespace tools/Storage */
+/** @namespace app/tools/Storage */
 
 const Storage = {
 
 	/**
 	 * Stores an item in localStorage
-	 * @memberof modules/Storage
+	 * @memberof app/tools/Storage
 	 * @param {String} key Key to reference value
 	 * @param {Object} json Value to store under key
 	 */
@@ -14,7 +14,7 @@ const Storage = {
 	},
 	/**
 	 * Accesses an item in localStorage
-	 * @memberof modules/Storage
+	 * @memberof app/tools/Storage
 	 * @param {String} key Key to reference value
 	 */
 	get: function (key) {
@@ -23,7 +23,7 @@ const Storage = {
 	},
 	/**
 	 * Clears all items in localStorage
-	 * @memberof modules/Storage
+	 * @memberof app/tools/Storage
 	 */
 	clear: function () {
 		window.localStorage.clear();

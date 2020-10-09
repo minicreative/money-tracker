@@ -1,4 +1,4 @@
-/** @namespace components/Form */
+/** @namespace app/components/Form */
 import React from 'react'
 import { withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'

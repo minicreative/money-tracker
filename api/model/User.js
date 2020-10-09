@@ -1,4 +1,4 @@
-/** @namespace model/User */
+/** @namespace api/model/User */
 
 // Initialize dependencies
 const Mongoose = require('mongoose');
@@ -33,7 +33,7 @@ function UserStaticMethods (schema) {
 
 	/**
 	 * Creates a new user in the database
-	 * @memberof model/User
+	 * @memberof api/model/User
 	 * @param {Object} params
 	 * @param {String} params.name Name of user
 	 * @param {String} params.email User email
@@ -95,7 +95,7 @@ function UserInstanceMethods (schema) {
 
 	/**
 	 * Updates an existing user
-	 * @memberof model/User
+	 * @memberof api/model/User
 	 * @param {Object} params
 	 * @param {String} [params.name] Name of user
 	 * @param {function(err, user)} callback Callback function

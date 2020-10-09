@@ -1,4 +1,4 @@
-/** @namespace components/View */
+/** @namespace app/components/View */
 import React from 'react'
 import Authentication from './../tools/Authentication'
 export default class View extends React.Component {

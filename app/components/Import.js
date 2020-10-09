@@ -1,4 +1,4 @@
-/** @namespace components/UploadModal */
+/** @namespace app/components/UploadModal */
 import React from 'react'
 import Requests from './../tools/Requests'
 

@@ -1,4 +1,4 @@
-/** @namespace components/Transaction */
+/** @namespace app/components/Transaction */
 import React from 'react'
 import Moment from 'moment'
 import Numeral from 'numeral'

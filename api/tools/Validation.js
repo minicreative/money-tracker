@@ -1,4 +1,4 @@
-/** @namespace tools/Validation */
+/** @namespace api/tools/Validation */
 // Validation.js: provides tools for validating incoming parameters
 
 const Messages = require('./Messages');
@@ -94,7 +94,7 @@ function isInvalidSort (input) {
 
 /**
  * Returns an error config object for the first in an array of errors
- * @memberof tools/Validation
+ * @memberof api/tools/Validation
  * @param {Array} errors Array of error messages
  * @return {Object} Error config object (or null)
  */
@@ -106,7 +106,7 @@ module.exports.catchErrors = function (errors) {
 
 /**
  * Returns error with email input
- * @memberof tools/Validation
+ * @memberof api/tools/Validation
  * @param {String} name Name of field
  * @param {String} input Field input
  * @return {Object} Error message (or null)
@@ -120,7 +120,7 @@ module.exports.email = function (name, input) {
 
 /**
  * Returns error with password input
- * @memberof tools/Validation
+ * @memberof api/tools/Validation
  * @param {String} name Name of field
  * @param {String} input Field input
  * @return {Object} Error message (or null)
@@ -135,7 +135,7 @@ module.exports.password = function (name, input) {
 
 /**
  * Returns error with string input
- * @memberof tools/Validation
+ * @memberof api/tools/Validation
  * @param {String} name Name of field
  * @param {String} input Field input
  * @return {Object} Error message (or null)
@@ -148,7 +148,7 @@ module.exports.string = function (name, input) {
 
 /**
  * Returns error with number input
- * @memberof tools/Validation
+ * @memberof api/tools/Validation
  * @param {String} name Name of field
  * @param {String} input Field input
  * @return {Object} Error message (or null)
@@ -161,7 +161,7 @@ module.exports.number = function (name, input) {
 
 /**
  * Returns error with currency input
- * @memberof tools/Validation
+ * @memberof api/tools/Validation
  * @param {String} name Name of field
  * @param {String} input Field input
  * @return {Object} Error message (or null)
@@ -174,7 +174,7 @@ module.exports.currency = function (name, input) {
 
 /**
  * Returns error with pageSize input
- * @memberof tools/Validation
+ * @memberof api/tools/Validation
  * @param {String} name Name of field
  * @param {Number} input Field input
  * @param {Number} maxPageSize Maxiumum page size
@@ -189,7 +189,7 @@ module.exports.pageSize = function (name, input, maxPageSize) {
 
 /**
  * Returns error with sort input
- * @memberof tools/Validation
+ * @memberof api/tools/Validation
  * @param {String} name Name of field
  * @param {String} input Field input
  * @return {Object} Error message (or null)
@@ -203,7 +203,7 @@ module.exports.sort = function (name, input) {
 
 /**
  * Returns error with CSV input
- * @memberof tools/Validation
+ * @memberof api/tools/Validation
  * @param {String} name Name of field
  * @param {String} input Field input
  * @return {Object} Error message (or null)

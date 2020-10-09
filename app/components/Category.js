@@ -1,4 +1,4 @@
-/** @namespace components/Category */
+/** @namespace app/components/Category */
 import React from 'react'
 import Requests from '../tools/Requests'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'

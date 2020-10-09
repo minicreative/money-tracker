@@ -1,4 +1,4 @@
-/** @namespace tools/Constants */
+/** @namespace app/ools/Constants */
 
 // Strings
 export const APP_NAME = "Money Tracker"

@@ -1,4 +1,4 @@
-/** @namespace tools/Secretary */
+/** @namespace api/tools/Secretary */
 
 const Async = require('async')
 const Messages = require('./Messages')
@@ -26,7 +26,7 @@ module.exports = {
 
 	/**
 	 * Creates an error config object for a request error
-	 * @memberof tools/Secretary
+	 * @memberof api/tools/Secretary
 	 * @param {String} message
 	 * @return {Object} Error object {code, message, handledError: true}
 	 */
@@ -36,7 +36,7 @@ module.exports = {
 
 	/**
 	 * Creates an error config object for a conflict error
-	 * @memberof tools/Secretary
+	 * @memberof api/tools/Secretary
 	 * @param {String} message
 	 * @return {Object} Error object {code, message, handledError: true}
 	 */
@@ -46,7 +46,7 @@ module.exports = {
 
 	/**
 	 * Creates an error config object for a authorization error
-	 * @memberof tools/Secretary
+	 * @memberof api/tools/Secretary
 	 * @param {String} message
 	 * @return {Object} Error object {code, message, handledError: true}
 	 */
@@ -56,7 +56,7 @@ module.exports = {
 
 	/**
 	 * Creates an error config object for an internal server error
-	 * @memberof tools/Secretary
+	 * @memberof api/tools/Secretary
 	 * @param {String} message
 	 * @return {Object} Error object {code, message, handledError: true}
 	 */
@@ -67,7 +67,7 @@ module.exports = {
 
 	/**
 	 * Attaches JSON to a provided response
-	 * @memberof tools/Secretary
+	 * @memberof api/tools/Secretary
 	 * @param {Object} response Express response object
 	 * @param {String} key JSON key to attach
 	 * @param {Object} value JSON object to attach
@@ -85,7 +85,7 @@ module.exports = {
 
 	/**
 	 * Prepares responses for client
-	 * @memberof tools/Secretary
+	 * @memberof api/tools/Secretary
 	 * @param {Object} response Express response object
 	 * @param {function (err, object)} callback Callback function
 	 */

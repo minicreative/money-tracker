@@ -1,4 +1,4 @@
-/** @namespace tools/Paging */
+/** @namespace api/tools/Paging */
 // Paging.js: provides tools for paging
 
 const Database = require("./Database")
@@ -20,7 +20,7 @@ module.exports = {
     
     /**
 	 * Adds validation for paging parameters
-	 * @memberof tools/Paging
+	 * @memberof api/tools/Paging
 	 * @param body Request body
      * @param validations Array of validation errors
 	 */
@@ -30,7 +30,7 @@ module.exports = {
 
     /**
      * Setup and call database page function
-     * @memberof tools/Paging
+     * @memberof api/tools/Paging
      * @param model Database model
      * @param body Request body
      * @param query Query for objects

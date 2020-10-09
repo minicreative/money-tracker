@@ -1,11 +1,11 @@
-/** @namespace tools/Messages */
+/** @namespace api/tools/Messages */
 // Messages.js: holds messages
 
 module.exports = {
 
 	/**
 	 * HTTP Response Codes
-	 * @memberof tools/Messages
+	 * @memberof api/tools/Messages
 	 */
 	'codes': {
 		'success': 200,
@@ -17,7 +17,7 @@ module.exports = {
 
 	/**
 	 * Authentication messages
-	 * @memberof tools/Messages
+	 * @memberof api/tools/Messages
 	 */
 	'authErrors': {
 		'invalidToken': "Invalid token",
@@ -28,7 +28,7 @@ module.exports = {
 
 	/**
 	 * Type error messages
-	 * @memberof tools/Messages
+	 * @memberof api/tools/Messages
 	 */
 	'typeErrors': {
 		'string': " is not a string",
@@ -39,7 +39,7 @@ module.exports = {
 
 	/**
 	 * Field error messages
-	 * @memberof tools/Messages
+	 * @memberof api/tools/Messages
 	 */
 	'fieldErrors': {
 		'missing': " is missing",
@@ -51,7 +51,7 @@ module.exports = {
 
 	/**
 	 * Conflict error messages
-	 * @memberof tools/Messages
+	 * @memberof api/tools/Messages
 	 */
 	'conflictErrors': {
 		'objectNotFound': "Object not found in the database",

@@ -1,4 +1,4 @@
-/** @namespace components/CategorySelect */
+/** @namespace app/components/CategorySelect */
 import React from 'react'
 import Requests from '../tools/Requests'
 import Autosuggest from 'react-autosuggest';
