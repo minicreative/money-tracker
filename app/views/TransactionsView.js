@@ -6,8 +6,8 @@ import Authentication from '../tools/Authentication'
 import Requests from '../tools/Requests'
 import View from '../components/View'
 import Transaction from '../components/Transaction'
+import Sum from '../components/Sum'
 import Moment from 'moment'
-import Numeral from 'numeral'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { TRANSACTIONS_PAGE_SIZE, QUERY_TIMER } from './../tools/Constants'
 
@@ -36,7 +36,7 @@ export default class TransactionsView extends View {
 
 		query: {
 			description: ''
-		}
+		},
 	}
 
 	componentDidMount() {
@@ -165,26 +165,21 @@ export default class TransactionsView extends View {
 		if (this._isMounted) this.setState({ query })
 
 		setTimeout(() => {
-			if (Date.now()-this.lastQueryChange > QUERY_TIMER) this.reload()
+			if (Date.now()-this.lastQueryChange > QUERY_TIMER) {
+				this.reload()
+			}
 		}, QUERY_TIMER)
 	}
 	
 	render() {
-		const { loading, error, exhausted, transactions, query, sum, sumLoading, sumError } = this.state;
+		const { loading, error, exhausted, transactions, query } = this.state;
 		return (
 			<div className="view">
 				<div className="heading">
 					<FontAwesomeIcon icon="plus-circle" className="button" onClick={this.createTransaction} />
 					<h1>{"Transactions"}</h1>
 					<input type="text" name="description" value={query.description} onChange={this.handleQueryChange} />
-					<p>
-						{"Total: "}
-						{sumLoading
-							? "Loading..."
-							: sumError
-								? sumError
-								: `${Numeral(sum).format('$0,0.00')}`}
-					</p>
+					<p>{"Total: "}<Sum filter={query} /></p>
 				</div>
 				<div className="row heading_row columns transaction">
 					<div className="column date">Date</div>
