@@ -69,10 +69,10 @@ export default class Category extends React.Component {
 					<thead>
 						<tr>
 							<th>{"Category"}</th>
-							<th>{"All Time"}</th>
-							<th>{"Avg. Month"}</th>
 							{monthArray.map(([key]) => 
 								<th key={key}>{Moment(parseInt(key)*1000).format('MMM YYYY')}</th>)}
+							<th>{"All Time"}</th>
+							<th>{"Avg. Month"}</th>
 							{/* <th>{"Avg. Day"}</th> */}
 						</tr>
 					</thead>
@@ -81,14 +81,14 @@ export default class Category extends React.Component {
 							if (data.categoryNames[category]) return (
 								<tr className={category === 'total' ? "total" : null} key={category}>
 									<td>{data.categoryNames[category]}</td>
-									<td>{Numeral(data.full[category]).format('$0,0.00')}</td>
-									<td>{Numeral(data.monthAverage[category]).format('$0,0.00')}</td>
 									{monthArray.map(([key]) => 
 										<td key={key}>{
 											data.monthly[key][category] != 0
 												? Numeral(data.monthly[key][category]).format('$0,0.00')
 												: null
 										}</td>)}
+									<td>{Numeral(data.full[category]).format('$0,0.00')}</td>
+									<td>{Numeral(data.monthAverage[category]).format('$0,0.00')}</td>
 									{/* <td>{Numeral(data.dayAverage[category]).format('$0,0.00')}</td> */}
 								</tr>
 							)
