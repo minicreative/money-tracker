@@ -152,7 +152,7 @@ header {
 .insight {
 	padding:0px 0px $padding_;
 	.insight-heading {padding:$padding_;}
-	.insight-table {display:block; width:100%; overflow-x:scroll;}
+	.insight-table, .insight-chart {display:block; width:100%; overflow-x:scroll;}
 	tr:nth-child(even) {background:$subtle_}
 	th, td {
 		padding:0px 14px; text-align:right;

@@ -1,4 +1,4 @@
-/** @namespace app/components/Category */
+/** @namespace app/components/CategoryInsights */
 import React from 'react'
 import Numeral from 'numeral'
 import Moment from 'moment'

@@ -26,10 +26,6 @@ export default class Category extends React.Component {
     }
     
     componentDidUpdate(prevProps) {
-        console.log('didupdate')
-        console.log(this.props.filter.description)
-        console.log(prevProps.filter.description)
-        console.log(!_.isEqual(this.props.filter, prevProps.filter))
         if (!_.isEqual(this.props.filter, prevProps.filter)) {
             console.log('diff')
             this.getSum();

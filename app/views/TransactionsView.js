@@ -1,13 +1,13 @@
 /** @namespace app/views/TransactionView */
 
 import React from 'react'
+import Moment from 'moment'
 
 import Authentication from '../tools/Authentication'
 import Requests from '../tools/Requests'
 import View from '../components/View'
 import Transaction from '../components/Transaction'
 import Sum from '../components/Sum'
-import Moment from 'moment'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { TRANSACTIONS_PAGE_SIZE, QUERY_TIMER } from './../tools/Constants'
 

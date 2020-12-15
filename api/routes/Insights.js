@@ -160,4 +160,92 @@ module.exports = router => {
 		], err => next(err));
 	})
 
+	/**
+	 * @api {POST} /insights.totals Totals
+	 * @apiName Totals
+	 * @apiGroup Insights
+	 * @apiDescription Get totals over time
+	 *
+	 * @apiSuccess {Object} totals
+	 *
+	 * @apiUse Authorization
+	 * @apiUse Error
+	 */
+	router.post('/insights.totals', (req, res, next) => {
+		req.handled = true;
+
+		// Synchronously perform the following tasks...
+		Async.waterfall([
+
+			// Authenticate user
+			callback => {
+				Authentication.authenticateUser(req, function (err, token) {
+					callback(err, token);
+				});
+			},
+
+			// Find transactions for user
+			(token, callback) => {
+				Database.find({
+					model: Transaction,
+					sort: '-date',
+					query: {
+						user: token.user,
+					},
+				}, (err, transactions) => {
+					callback(err, transactions)
+				})
+			},
+
+			// Compile data
+			(transactions, callback) => {
+
+				var months = {}
+
+				// Iterate through transactions
+				transactions.forEach(transaction => {
+
+					// Don't handle income or future transactions
+					if (transaction.amount > 0) return
+					if (Moment().isBefore(transaction.date*1000)) return
+
+					// Exclusion filters
+					if (req.body.excludeGifts && transaction.category === 'a2af8852-5f71-4009-9c37-070263452cc3') return
+					if (req.body.excludeHousing && 
+						(
+							transaction.category === 'ed8055cc-4031-41b0-bfb1-6be1d885ebe9' ||
+							transaction.category === '4b546459-285a-4a87-88de-3a3f5a6d96f5'
+						)
+					) return
+
+					// Get month ID for transaction
+					const monthID = Moment(transaction.date*1000).startOf('month').format('X')
+
+					// Initial month if necessary
+					if (months[monthID] === undefined) {
+						months[monthID] = 0
+					}
+
+					// Add transaction to monthly sum
+					months[monthID] += transaction.amount
+				})
+
+				// Setup response
+				let timestamps = []
+				let totals = []
+				for (let key in months) {
+					if (months.hasOwnProperty(key)) timestamps.push(key)
+				}
+				timestamps.sort((a, b) => b-a)
+				for (let i in timestamps) {
+					totals[i] = Math.abs(months[timestamps[i]])
+				}
+
+				Secretary.addToResponse(res, "data", { timestamps, totals }, true)
+				callback()
+			},
+
+		], err => next(err));
+	})
+
 }
