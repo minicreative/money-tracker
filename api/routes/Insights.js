@@ -104,12 +104,17 @@ module.exports = router => {
 						firstTransactionTime = transaction.date
 					}
 
-					// Exclude gifts
-					if (req.body.excludeGifts && transaction.category === 'a2af8852-5f71-4009-9c37-070263452cc3') return
+					// Exclusion filters
+					if (req.body.excludeGifts && 
+						(
+							transaction.category === 'a2af8852-5f71-4009-9c37-070263452cc3' || // Gifts
+							transaction.category === '9e5fc306-84a9-4232-8511-c6012a955540'    // Pets
+						)
+					) return
 					if (req.body.excludeHousing && 
 						(
-							transaction.category === 'ed8055cc-4031-41b0-bfb1-6be1d885ebe9' ||
-							transaction.category === '4b546459-285a-4a87-88de-3a3f5a6d96f5'
+							transaction.category === 'ed8055cc-4031-41b0-bfb1-6be1d885ebe9' || // Rent
+							transaction.category === '4b546459-285a-4a87-88de-3a3f5a6d96f5'    // Utilities
 						)
 					) return
 
@@ -210,11 +215,16 @@ module.exports = router => {
 					if (Moment().isBefore(transaction.date*1000)) return
 
 					// Exclusion filters
-					if (req.body.excludeGifts && transaction.category === 'a2af8852-5f71-4009-9c37-070263452cc3') return
+					if (req.body.excludeGifts && 
+						(
+							transaction.category === 'a2af8852-5f71-4009-9c37-070263452cc3' || // Gifts
+							transaction.category === '9e5fc306-84a9-4232-8511-c6012a955540'    // Pets
+						)
+					) return
 					if (req.body.excludeHousing && 
 						(
-							transaction.category === 'ed8055cc-4031-41b0-bfb1-6be1d885ebe9' ||
-							transaction.category === '4b546459-285a-4a87-88de-3a3f5a6d96f5'
+							transaction.category === 'ed8055cc-4031-41b0-bfb1-6be1d885ebe9' || // Rent
+							transaction.category === '4b546459-285a-4a87-88de-3a3f5a6d96f5'    // Utilities
 						)
 					) return
 
