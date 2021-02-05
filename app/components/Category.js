@@ -8,6 +8,7 @@ function getFieldStateForCategory (category) {
 	return {
 		name: category.name ? category.name : '',
 		parent: category.parentName ? category.parentName : '',
+		income: category.income,
 	}
 }
 
@@ -26,6 +27,7 @@ export default class Category extends React.Component {
 		fields: {
 			name: '',
 			parent: '',
+			income: false,
 		},
 	}
 
@@ -56,6 +58,7 @@ export default class Category extends React.Component {
 			guid: this.props.category.guid,
 			name: fields.name,
 			parentName: fields.parent,
+			income: fields.income,
 		}
 		if (this._isMounted) this.setState({ edited: false, loading: true })
 		Requests.do('category.edit', request).then((response) => {
@@ -78,12 +81,15 @@ export default class Category extends React.Component {
 	render() {
 		const { edited, loading, fields } = this.state
 		return (
-			<li className="row category">
+			<li className="row category-row">
 				<div className={`column name`}>
 					<input name="name" type="text" value={fields.name} onChange={this.handleChange} />
 				</div>
 				<div className={`column parent`}>
 					<input name="parent" type="text" value={fields.parent} onChange={this.handleChange} />
+				</div>
+				<div className={`column income`}>
+					<input name="income" type="checkbox" checked={fields.income} onChange={this.handleChange} />
 				</div>
 				<div className="column check right">
 					{loading ? "..." : edited ? "e" : "s"}

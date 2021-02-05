@@ -21,6 +21,10 @@ function CategoryProperties (schema) {
 		'parent': {
 			'type': String,
 			'index': true
+		},
+		'income': {
+			'type': Boolean,
+			'index': true
 		}
     });
 };
@@ -33,10 +37,11 @@ function CategoryStaticMethods (schema) {
 	 * @param {Object} params
 	 * @param {String} params.user User GUID
 	 * @param {String} params.name Name
-	 * @param {String} params.parent Parent category GUIT
+	 * @param {String} params.parent Parent category GUID
+	 * @param {Boolean} params.income Income
 	 * @param {function(err, Category)} callback Callback function
 	 */
-	schema.statics.create = function ({user, name, parent}, callback) {
+	schema.statics.create = function ({user, name, parent, income}, callback) {
 
 		// Save reference to model
 		var Category = this;
@@ -64,6 +69,7 @@ function CategoryStaticMethods (schema) {
 					'guid': GUID,
 					'user': user,
 					'name': name,
+					'income': income,
 					'dateCreated': Dates.now(),
 				}
 				if (parent) set.parent = parent;
@@ -122,7 +128,7 @@ function CategoryInstanceMethods (schema) {
 	 * @param {String} [params.parent] Parent
 	 * @param {function(err, category)} callback Callback function
 	 */
-	schema.methods.edit = function ({name, parent}, callback) {
+	schema.methods.edit = function ({name, parent, income}, callback) {
 
 		// Save reference to model
 		var Category = this;
@@ -136,6 +142,7 @@ function CategoryInstanceMethods (schema) {
 		var unset = {}
 		var set = {
 			'lastModified': Dates.now(),
+			'income': income,
 		};
 		if (name) set.name = name;
 		if (parent === null) unset.parent = "";

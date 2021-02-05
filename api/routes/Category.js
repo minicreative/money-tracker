@@ -119,6 +119,7 @@ module.exports = router => {
 				let vars = {
 					'user': token.user,
 					'name': req.body.name,
+					'income': req.body.income ? true : false,
 				};
 				if (parent) vars.parent = parent.guid;
 				Category.create(vars, (err, category) => {
@@ -208,6 +209,7 @@ module.exports = router => {
 			(token, category, parent, callback) => {
 				category.edit({
 					'name': req.body.name,
+					'income': req.body.income ? true : false,
 					'parent': parent ? parent.guid : null,
 				}, (err, category) => {
 					Secretary.addToResponse(res, 'category', category)

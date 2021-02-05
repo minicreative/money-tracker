@@ -55,7 +55,7 @@ export default class Transaction extends React.Component {
 		// Setup timer for updates
 		setTimeout(() => {
 			if (Date.now()-this.lastEdited > EDIT_TIMER) this.update()
-		}, EDIT_TIMER)
+		}, EDIT_TIMER+10)
 	}
 
 	update() {
@@ -111,7 +111,7 @@ export default class Transaction extends React.Component {
 	render() {
 		const { edited, loading, fields, errors } = this.state
 		return (
-			<li className="row transaction">
+			<li className="transaction row transaction-row">
 				<div className={`column date ${errors.date ? 'error' : ''}`}>
 					<input name="date" type="text" value={fields.date} onChange={this.handleChange} />
 				</div>

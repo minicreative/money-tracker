@@ -78,9 +78,10 @@ export default class CategoriesView extends View {
 				<div className="heading">
 					<h1>{"Categories"}</h1>
 				</div>
-				<div className="row heading_row columns category">
+				<div className="row heading_row columns category-row">
 					<div className="column name">Name</div>
 					<div className="column parent">Parent Category</div>
+					<div className="column income">Income?</div>
 					<div className="column check"></div>
 				</div>
 				{categories.map((category) => <Category key={category.guid} category={category} update={this.update} />)}

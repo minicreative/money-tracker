@@ -2,14 +2,15 @@
 
 import React from 'react'
 import Moment from 'moment'
+import Numeral from 'numeral'
 
 import Authentication from '../tools/Authentication'
 import Requests from '../tools/Requests'
 import View from '../components/View'
 import Transaction from '../components/Transaction'
-import Sum from '../components/Sum'
+import TransactionFilter from '../components/TransactionFilter'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { TRANSACTIONS_PAGE_SIZE, QUERY_TIMER } from './../tools/Constants'
+import { TRANSACTIONS_PAGE_SIZE } from './../tools/Constants'
 
 let scrollForwarder
 
@@ -21,8 +22,10 @@ export default class TransactionsView extends View {
 		this.sum = this.sum.bind(this)
 		this.update = this.update.bind(this)
 		this.createTransaction = this.createTransaction.bind(this)
-		this.handleQueryChange = this.handleQueryChange.bind(this)
+		this.handleFilter = this.handleFilter.bind(this)
 	}
+
+	filter = {}
 
 	state = {
 		transactions: [],
@@ -33,10 +36,6 @@ export default class TransactionsView extends View {
 		sum: 0,
 		sumLoading: false,
 		sumError: null,
-
-		query: {
-			description: ''
-		},
 	}
 
 	componentDidMount() {
@@ -58,18 +57,23 @@ export default class TransactionsView extends View {
 		})
 	}
 
+	handleFilter(filter) {
+		this.filter = filter
+		this.reload()
+	}
+
 	handleScroll = () => { 
 		const { loading, exhausted } = this.state
-		const lastItem = document.querySelector(".view li:last-of-type");
-		const lastItemOffset = lastItem.offsetTop + lastItem.clientHeight;
-		const pageOffset = window.pageYOffset + window.innerHeight;
+		const lastItem = document.querySelector(".view li.transaction:last-of-type")
+		if (!lastItem) return
+		const lastItemOffset = lastItem.offsetTop + lastItem.clientHeight
+		const pageOffset = window.pageYOffset + window.innerHeight
 		if (pageOffset > lastItemOffset) {
-			if (!loading && !exhausted) this.page();
+			if (!loading && !exhausted) this.page()
 		}
 	};
 
 	createTransaction() {
-		const { transactions } = this.state;
 		this.setState({ loading: true })
 		Requests.do('transaction.create', {
 			date: Number(Moment().format('X')),
@@ -82,7 +86,7 @@ export default class TransactionsView extends View {
 	}
 
 	page() {
-		const { transactions, query } = this.state
+		const { transactions } = this.state
 
 		// Get true last transaction
 		let lastTransaction
@@ -91,11 +95,12 @@ export default class TransactionsView extends View {
 		}
 
 		this.setState({ loading: true })
-		Requests.do('transaction.list', { 
-			pageSize: TRANSACTIONS_PAGE_SIZE, 
-			pageFrom: lastTransaction ? lastTransaction.date : undefined,
-			description: query.description,
-		}).then((response) => {
+
+		let query = this.filter;
+		query.pageSize = TRANSACTIONS_PAGE_SIZE
+		query.pageFrom = lastTransaction ? lastTransaction.date : undefined
+
+		Requests.do('transaction.list', query).then((response) => {
 			let exhausted = false;
 			if (response.transactions) {
 				if (response.transactions.length < TRANSACTIONS_PAGE_SIZE) exhausted = true;
@@ -113,11 +118,8 @@ export default class TransactionsView extends View {
 	}
 
 	sum() {
-		const { query } = this.state
 		this.setState({ sumLoading: true })
-		Requests.do('transaction.sum', {
-			description: query.description
-		}).then((response) => {
+		Requests.do('transaction.sum', this.filter).then((response) => {
 			if (this._isMounted) this.setState({
 				sum: response.sum,
 				sumLoading: false,
@@ -150,38 +152,36 @@ export default class TransactionsView extends View {
 		// Sort transactions
 		transactions.sort((a, b) => b.date-a.date); // Needs be updated with table-aware sort function
 
-		// Don't keep transaction if it's been moved to the very bottom
-		if (transactions[transactions.length - 1].moved) {
+		// Don't keep transaction if it's been moved to the very bottom and we have a full page
+		if (transaction.length >= TRANSACTIONS_PAGE_SIZE && transactions[transactions.length - 1].moved) {
 			transactions.pop();
 		}
 
 		this.setState({ transactions })
-	}
-
-	handleQueryChange(event) {
-		this.lastQueryChange = Date.now()
-		const { query } = this.state
-		query[event.target.name] = event.target.value
-		if (this._isMounted) this.setState({ query })
-
-		setTimeout(() => {
-			if (Date.now()-this.lastQueryChange > QUERY_TIMER) {
-				this.reload()
-			}
-		}, QUERY_TIMER)
+		if (transaction.amount) this.sum()
 	}
 	
 	render() {
-		const { loading, error, exhausted, transactions, query } = this.state;
+		const {
+			loading, error, exhausted, transactions,
+			sum, sumLoading, sumError,
+		} = this.state;
 		return (
 			<div className="view">
 				<div className="heading">
 					<FontAwesomeIcon icon="plus-circle" className="button" onClick={this.createTransaction} />
 					<h1>{"Transactions"}</h1>
-					<input type="text" name="description" value={query.description} onChange={this.handleQueryChange} />
-					<p>{"Total: "}<Sum filter={query} /></p>
+					<p>
+						{"Total: "}
+						{sumLoading
+							? "Loading..."
+							: sumError
+								? sumError
+								: `${Numeral(sum).format('$0,0.00')}`}
+					</p>
 				</div>
-				<div className="row heading_row columns transaction">
+				<TransactionFilter propagate={this.handleFilter} />
+				<div className="row heading_row columns transaction-row">
 					<div className="column date">Date</div>
 					<div className="column desc">Note</div>
 					<div className="column category">Category</div>
@@ -190,7 +190,7 @@ export default class TransactionsView extends View {
 				</div>
 				{transactions.map((transaction) => 
 					<Transaction transaction={transaction} key={transaction.guid} update={this.update} />)}
-				{ loading
+				{loading
 					? "Loading..." 
 					: exhausted
 						? "No more items"

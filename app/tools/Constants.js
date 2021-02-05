@@ -11,5 +11,5 @@ export const NO_AUTH_LANDING = "/login"
 export const TRANSACTIONS_PAGE_SIZE = 200
 
 // Timers
-export const EDIT_TIMER = 5000
+export const EDIT_TIMER = 3000
 export const QUERY_TIMER = 500

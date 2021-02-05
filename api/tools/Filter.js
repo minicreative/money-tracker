@@ -31,5 +31,16 @@ module.exports = {
 		if (body.description) {
 			query.description = new RegExp(body.description, 'i')
 		}
+		if (body.categories) {
+			query.category = {
+				'$in': body.categories,
+			}
+		}
+		if (body.startDate && body.endDate) {
+			query.date = {
+				'$gte': body.startDate,
+				'$lt': body.endDate, 
+			}
+		}
 	},
 };

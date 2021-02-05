@@ -44,6 +44,7 @@
     "react": "^16.13.0",
     "react-autosuggest": "^10.0.0",
     "react-context-hook": "^1.2.1",
+    "react-day-picker": "^7.4.8",
     "react-dom": "^16.13.0",
     "react-router-dom": "^5.1.2",
     "request": "^2.88.2",
