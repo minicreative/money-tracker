@@ -1,5 +1,6 @@
 const Async = require('async')
 const HashPassword = require('password-hash')
+const Plaid = require('plaid')
 
 const Database = require('./../tools/Database')
 const Validation = require('./../tools/Validation')
@@ -184,6 +185,49 @@ module.exports = router => {
 				});
 			},
 
+		], err => next(err));
+	})
+
+	/**
+	 * @api {POST} /user.plaidToken Plaid Token
+	 * @apiName Plaid Token
+	 * @apiGroup User
+	 * @apiDescription Get a Plaid token
+	 *
+	 * @apiSuccess {String} token Plaid link token
+	 *
+	 * @apiUse Error
+	 */
+	router.post('/user.plaidToken', (req, res, next) => {
+		req.handled = true;
+
+		let plaidClient = new Plaid.Client({
+			clientID: process.env.mt_plaid_client_id,
+			secret: process.env.mt_plaid_secret,
+			env: Plaid.environments.development,
+		});
+
+		Async.waterfall([
+			callback => {
+				Authentication.authenticateUser(req, function (err, token) {
+					callback(err, token);
+				});
+			},
+			(token, callback) => {
+				plaidClient.createLinkToken({
+					user: {
+						client_user_id: token.user,
+					},
+					client_name: 'Money Tracker',
+					products: ['auth', 'transactions'],
+					country_codes: ['US'],
+					language: 'en',
+				}, (err, plaidRes) => {
+					if (err) return callback(err)
+					Secretary.addToResponse(res, "plaidToken", plaidRes.link_token, true)
+					callback()
+				});
+			}
 		], err => next(err));
 	})
 
