@@ -147,6 +147,19 @@ module.exports.string = function (name, input) {
 };
 
 /**
+ * Returns error with array input
+ * @memberof api/tools/Validation
+ * @param {String} name Name of field
+ * @param {String} input Field input
+ * @return {Object} Error message (or null)
+ */
+module.exports.array = function (name, input) {
+	return getNamedErrorFromArray([
+		isInvalidArray(input),
+	], name);
+};
+
+/**
  * Returns error with number input
  * @memberof api/tools/Validation
  * @param {String} name Name of field

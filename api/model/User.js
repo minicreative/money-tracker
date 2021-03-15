@@ -24,6 +24,10 @@ function UserProperties (schema) {
 			'type': String,
 			'index': true,
 			'required': true
+		},
+		"plaidTokens": {
+			'type': [String],
+			'default': [],
 		}
     });
 };
@@ -100,7 +104,7 @@ function UserInstanceMethods (schema) {
 	 * @param {String} [params.name] Name of user
 	 * @param {function(err, user)} callback Callback function
 	 */
-	schema.methods.edit = function ({name}, callback) {
+	schema.methods.edit = function ({name, plaidTokens}, callback) {
 
 		// Save reference to model
 		var User = this;
@@ -115,6 +119,7 @@ function UserInstanceMethods (schema) {
 			'lastModified': Dates.now(),
 		};
 		if (name) set.name = name;
+		if (plaidTokens) set.plaidTokens = plaidTokens;
 		var update = {
 			'$set': set
 		};

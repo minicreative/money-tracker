@@ -10,6 +10,12 @@ const Authentication = require('./../tools/Authentication')
 
 const User = require('./../model/User')
 
+const plaidClient = new Plaid.Client({
+	clientID: process.env.mt_plaid_client_id,
+	secret: process.env.mt_plaid_secret,
+	env: Plaid.environments.development,
+});
+
 module.exports = router => {
 
 	/**
@@ -123,6 +129,70 @@ module.exports = router => {
 		], err => next(err));
 	})
 
+		/**
+	 * @api {POST} /user.edit Create
+	 * @apiName Edit
+	 * @apiGroup User
+	 * @apiDescription Edits a user based on auth token
+	 *
+	 * @apiParam {Name} name User's name
+	 * 
+	 * @apiSuccess {Object} user User object
+	 * @apiSuccess {String} token Authentication token
+	 *
+	 * @apiUse Error
+	 */
+	router.post('/user.edit', (req, res, next) => {
+		req.handled = true;
+
+		// Validate all fields
+		let validations = [];
+		if (req.body.name) {
+			validations.push(Validation.string('Name', req.body.name))
+		}
+		if (req.body.plaidTokens) {
+			validations.push(Validation.array('Plaid tokens', req.body.plaidTokens))
+		}
+		var err = Validation.catchErrors(validations);
+		if (err) return next(err);
+
+		// Synchronously perform the following tasks...
+		Async.waterfall([
+
+			// Authenticate user
+			callback => {
+				Authentication.authenticateUser(req, function (err, token) {
+					callback(err, token);
+				});
+			},
+
+			// Get user for token
+			(token, callback) => {
+				Database.findOne({
+					'model': User,
+					'query': {
+						'guid': token.user
+					}
+				}, (err, user) => {
+					if (!user) callback(Secretary.requestError(Messages.authErrors.invalidToken));
+					else callback(err, user)
+				})
+			},
+
+			// Edit user, add to reply
+			(user, callback) => {
+				user.edit({
+					'name': req.body.name,
+					'plaidTokens': req.body.plaidTokens,
+				}, (err, user) => {
+					if (user) Secretary.addToResponse(res, "user", user)
+					callback(err, user);
+				});
+			},
+
+		], err => next(err));
+	})
+
 	/**
 	 * @api {POST} /user.login Login
 	 * @apiName Login
@@ -189,23 +259,17 @@ module.exports = router => {
 	})
 
 	/**
-	 * @api {POST} /user.plaidToken Plaid Token
-	 * @apiName Plaid Token
+	 * @api {POST} /user.plaidLinkToken Get Plaid Link Token
+	 * @apiName Get Plaid Link Token
 	 * @apiGroup User
-	 * @apiDescription Get a Plaid token
+	 * @apiDescription Get a Plaid Link token
 	 *
 	 * @apiSuccess {String} token Plaid link token
 	 *
 	 * @apiUse Error
 	 */
-	router.post('/user.plaidToken', (req, res, next) => {
+	router.post('/user.plaidLinkToken', (req, res, next) => {
 		req.handled = true;
-
-		let plaidClient = new Plaid.Client({
-			clientID: process.env.mt_plaid_client_id,
-			secret: process.env.mt_plaid_secret,
-			env: Plaid.environments.development,
-		});
 
 		Async.waterfall([
 			callback => {
@@ -228,6 +292,128 @@ module.exports = router => {
 					callback()
 				});
 			}
+		], err => next(err));
+	})
+
+	/**
+	 * @api {POST} /user.savePlaidToken Save Plaid Token
+	 * @apiName Save Plaid Token
+	 * @apiGroup User
+	 * @apiDescription Save a public Plaid token as an access token
+	 * 
+	 * @apiParam {String} plaidToken Public Plaid token
+	 *
+	 * @apiUse Error
+	 */
+	router.post('/user.savePlaidToken', (req, res, next) => {
+		req.handled = true;
+
+		// Validate all fields
+		var validations = [
+			Validation.string('Plaid token', req.body.plaidToken),
+		];
+		var err = Validation.catchErrors(validations);
+		if (err) return next(err);
+
+		Async.waterfall([
+
+			// Authenticate user
+			callback => {
+				Authentication.authenticateUser(req, function (err, token) {
+					callback(err, token);
+				});
+			},
+
+			// Get user for token
+			(token, callback) => {
+				Database.findOne({
+					'model': User,
+					'query': {
+						'guid': token.user
+					}
+				}, (err, user) => {
+					if (!user) callback(Secretary.requestError(Messages.authErrors.invalidToken));
+					else callback(err, user)
+				})
+			},
+
+			// Exchange public token for access token
+			(user, callback) => {
+				plaidClient.exchangePublicToken(publicToken)
+					.then(response => callback(null, user, response.access_token))
+					.catch(err => callback(err))
+			},
+
+			// Save access token in user
+			(user, accessToken, callback) => {
+				let { plaidTokens } = user
+				plaidTokens.push(accessToken)
+				user.edit({
+					plaidTokens,
+				}, (err, user) => {
+					if (user) Secretary.addToResponse(res, "user", user)
+					callback(err);
+				});
+			},
+
+		], err => next(err));
+	})
+
+	/**
+	 * @api {POST} /user.accounts Accounts
+	 * @apiName Accounts
+	 * @apiGroup User
+	 * @apiDescription Get a user's accounts and balances
+	 *
+	 * @apiSuccess {Array} accounts Array of account objects
+	 *
+	 * @apiUse Error
+	 */
+	router.post('/user.accounts', (req, res, next) => {
+		req.handled = true;
+
+		let accounts = [];
+
+		Async.waterfall([
+
+			// Authenticate user
+			callback => {
+				Authentication.authenticateUser(req, function (err, token) {
+					callback(err, token);
+				});
+			},
+
+			// Get user for token
+			(token, callback) => {
+				Database.findOne({
+					'model': User,
+					'query': {
+						'guid': token.user
+					}
+				}, (err, user) => {
+					if (!user) callback(Secretary.requestError(Messages.authErrors.invalidToken));
+					else callback(err, user)
+				})
+			},
+
+			// Get accounts
+			(user, callback) => {
+				Async.each(user.plaidTokens, (accessToken, callback) => {
+					plaidClient.getAccounts(accessToken)
+						.then(response => {
+							accounts = accounts.concat(response.accounts)
+							callback()
+						})
+						.catch(err => callback(err))
+				}, err => callback(err))
+			},
+
+			// Attach to response
+			callback => {
+				Secretary.addToResponse(res, "accounts", accounts, true)
+				callback()
+			}
+
 		], err => next(err));
 	})
 

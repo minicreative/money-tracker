@@ -9,6 +9,7 @@ import Header from './components/Header'
 import LoginView from './views/LoginView'
 import SignupView from './views/SignupView'
 import TransactionsView from './views/TransactionsView'
+import AccountsView from './views/AccountsView'
 import CategoriesView from './views/CategoriesView'
 import InsightsView from './views/InsightsView'
 import SettingsView from './views/SettingsView'
@@ -34,6 +35,7 @@ export default class App extends React.Component{
 					<Route path="/login" render={props => <LoginView inside={false} {...props} />}></Route>
 					<Route path="/signup" render={props => <SignupView inside={false} {...props} />}></Route>
 					<Route path="/transactions" render={props => <TransactionsView inside={true} {...props} />}></Route>
+					<Route path="/accounts" render={props => <AccountsView inside={true} {...props} />}></Route>
 					<Route path="/categories" render={props => <CategoriesView inside={true} {...props} />}></Route>
 					<Route path="/insights" render={props => <InsightsView inside={true} {...props} />}></Route>
 					<Route path="/settings" render={props => <SettingsView inside={true} {...props} />}></Route>

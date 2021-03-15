@@ -21,7 +21,7 @@ export default class SettingsView extends View {
 	}
 
 	plaidSetup() {
-		Requests.do("user.plaidToken")
+		Requests.do("user.plaidLinkToken")
 			.then(response => {
 				this.setState({
 					plaidToken: response.plaidToken,
@@ -30,8 +30,10 @@ export default class SettingsView extends View {
 			.catch(err => {})
 	}
 
-	plaidSuccess(token, metadata) {
-
+	plaidSuccess(token) {
+		Requests.do("user.savePlaidToken", { 
+			plaidToken: token 
+		})
 	}
 
 	render() {
