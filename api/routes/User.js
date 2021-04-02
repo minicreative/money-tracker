@@ -1,6 +1,7 @@
 const Async = require('async')
 const HashPassword = require('password-hash')
 const Plaid = require('plaid')
+const Binance = require('node-binance-us-api');
 
 const Database = require('./../tools/Database')
 const Validation = require('./../tools/Validation')
@@ -359,20 +360,27 @@ module.exports = router => {
 		], err => next(err));
 	})
 
-	/**
-	 * @api {POST} /user.accounts Accounts
-	 * @apiName Accounts
+		/**
+	 * @api {POST} /user.saveBinanceKeys Save Binance Keys
+	 * @apiName Save Binance Keys
 	 * @apiGroup User
-	 * @apiDescription Get a user's accounts and balances
-	 *
-	 * @apiSuccess {Array} accounts Array of account objects
+	 * @apiDescription Save a Binance API Key and Secret Key for a user
+	 * 
+	 * @apiParam {String} binanceKey Binance API Key
+	 * @apiParam {String} binanceSecret Binance Secret Key
 	 *
 	 * @apiUse Error
 	 */
-	router.post('/user.accounts', (req, res, next) => {
+	router.post('/user.saveBinanceKeys', (req, res, next) => {
 		req.handled = true;
 
-		let accounts = [];
+		// Validate all fields
+		var validations = [
+			Validation.string('Binance key', req.body.binanceKey),
+			Validation.string('Binance secret', req.body.binanceSecret),
+		];
+		var err = Validation.catchErrors(validations);
+		if (err) return next(err);
 
 		Async.waterfall([
 
@@ -396,8 +404,61 @@ module.exports = router => {
 				})
 			},
 
-			// Get accounts
+			// Save access token in user
 			(user, callback) => {
+				user.edit({
+					binanceKey: req.body.binanceKey,
+					binanceSecret: req.body.binanceSecret,
+				}, (err, user) => {
+					if (user) Secretary.addToResponse(res, "user", user)
+					callback(err);
+				});
+			},
+
+		], err => next(err));
+	})
+
+	/**
+	 * @api {POST} /user.accounts Accounts
+	 * @apiName Accounts
+	 * @apiGroup User
+	 * @apiDescription Get a user's accounts and balances
+	 *
+	 * @apiSuccess {Array} accounts Array of account objects
+	 *
+	 * @apiUse Error
+	 */
+	router.post('/user.accounts', (req, res, next) => {
+		req.handled = true;
+
+		let accounts = [];
+		let holdings = [];
+
+		Async.waterfall([
+
+			// Authenticate user
+			callback => {
+				Authentication.authenticateUser(req, function (err, token) {
+					callback(err, token);
+				});
+			},
+
+			// Get user for token
+			(token, callback) => {
+				Database.findOne({
+					'model': User,
+					'query': {
+						'guid': token.user
+					}
+				}, (err, user) => {
+					if (!user) callback(Secretary.requestError(Messages.authErrors.invalidToken));
+					else callback(err, user)
+				})
+			},
+
+			// Get Plaid accounts (if applicable)
+			(user, callback) => {
+				if (user.plaidTokens.length < 1) return callback(null, user)
 				Async.each(user.plaidTokens, (accessToken, callback) => {
 					plaidClient.getAccounts(accessToken)
 						.then(response => {
@@ -405,12 +466,41 @@ module.exports = router => {
 							callback()
 						})
 						.catch(err => callback(err))
-				}, err => callback(err))
+				}, err => callback(err, user))
+			},
+
+			// Get Binance balances
+			(user, callback) => {
+				if (!user.binanceKey || !user.binanceSecret) return callback()
+				const binanceClient = new Binance({
+					APIKEY: user.binanceKey,
+					APISECRET: user.binanceSecret,
+				});
+				binanceClient.balance((err, balances) => {
+					if (err) return callback(err)
+					for (let symbol in balances) {
+						if (balances[symbol].available > 0) {
+							holdings.push({
+								symbol,
+								amount: balances[symbol].available
+							})
+						}
+					}
+					binanceClient.prices((err, prices) => {
+						if (err) return callback(err)
+						for (let i in holdings) {
+							holdings[i].price = prices[holdings[i].symbol+"USD"]
+							holdings[i].value = holdings[i].amount * holdings[i].price;
+						}
+						callback()
+					})
+				});
 			},
 
 			// Attach to response
 			callback => {
 				Secretary.addToResponse(res, "accounts", accounts, true)
+				Secretary.addToResponse(res, "holdings", holdings, true)
 				callback()
 			}
 

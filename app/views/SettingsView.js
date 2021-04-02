@@ -4,6 +4,7 @@ import React from 'react'
 import View from '../components/View';
 import { PlaidLink } from 'react-plaid-link';
 import Requests from '../tools/Requests'
+import Form from '../components/Form';
 
 export default class SettingsView extends View {
 
@@ -44,6 +45,15 @@ export default class SettingsView extends View {
 				<PlaidLink token={plaidToken} onSuccess={this.plaidSuccess}>
 					{"Setup a bank account"}
 				</PlaidLink>
+				<h2>{"Binance API"}</h2>
+				<Form
+					history={this.props.history}
+					endpoint={'user.saveBinanceKeys'}
+					fields={{
+						binanceKey: { type: 'text', title: 'API Key' },
+						binanceSecret: { type: 'text', title: 'Secret Key'}
+					}}
+				/>
 			</div>
 		);
   	}

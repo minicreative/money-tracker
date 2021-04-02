@@ -6,7 +6,10 @@ const Messages = require('./Messages')
 const privateKeys = [
 	"_id",
 	"__v",
-	"password"
+	"password",
+	"plaidTokens",
+	"binanceKey",
+	"binanceSecret"
 ];
 
 function createError(code, message) {

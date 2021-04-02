@@ -25,9 +25,17 @@ function UserProperties (schema) {
 			'index': true,
 			'required': true
 		},
-		"plaidTokens": {
+
+		// Account tokens
+		'plaidTokens': {
 			'type': [String],
 			'default': [],
+		},
+		'binanceKey': {
+			'type': String,
+		},
+		'binanceSecret': {
+			'type': String,
 		}
     });
 };
@@ -104,7 +112,9 @@ function UserInstanceMethods (schema) {
 	 * @param {String} [params.name] Name of user
 	 * @param {function(err, user)} callback Callback function
 	 */
-	schema.methods.edit = function ({name, plaidTokens}, callback) {
+	schema.methods.edit = function ({
+		name, plaidTokens, binanceKey, binanceSecret,
+	}, callback) {
 
 		// Save reference to model
 		var User = this;
@@ -120,6 +130,8 @@ function UserInstanceMethods (schema) {
 		};
 		if (name) set.name = name;
 		if (plaidTokens) set.plaidTokens = plaidTokens;
+		if (binanceKey) set.binanceKey = binanceKey;
+		if (binanceSecret) set.binanceSecret = binanceSecret;
 		var update = {
 			'$set': set
 		};
