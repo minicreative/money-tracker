@@ -51,7 +51,7 @@
     "react-plaid-link": "^3.1.0",
     "react-router-dom": "^5.1.2",
     "request": "^2.88.2",
-    "underscore": "^1.9.2",
+    "underscore": "^1.13.1",
     "uuid": "^3.4.0"
   },
   "devDependencies": {
@@ -61,8 +61,8 @@
     "@babel/preset-react": "^7.8.3",
     "apidoc": "^0.17.7",
     "babel-loader": "^8.1.0",
-    "css-loader": "^3.4.2",
-    "jsdoc": "^3.6.5",
+    "css-loader": "^5.2.5",
+    "jsdoc": "^3.6.7",
     "minimist": ">=1.2.3",
     "node-sass": "^4.14.1",
     "nodemon": "^2.0.2",
