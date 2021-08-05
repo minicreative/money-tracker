@@ -9,7 +9,7 @@ import { EDIT_TIMER } from '../tools/Constants'
 
 function getFieldStateForTransaction (transaction) {
 	return {
-		date: transaction.date ? Moment(transaction.date*1000).format('MMMM D, YYYY') : '',
+		date: transaction.date ? Moment(transaction.date, 'X').utc().format('MMMM D, YYYY') : '',
 		description: transaction.description ? transaction.description : '',
 		category: transaction.categoryName ? transaction.categoryName : '',
 		amount: transaction.amount ? Numeral(transaction.amount).format('$0,0.00') : '',
@@ -84,7 +84,7 @@ export default class Transaction extends React.Component {
 		if (isNaN(date)) {
 			errors.date = true
 		} else {
-			request.date = date/1000;
+			request.date = Number(Moment(date).utc().startOf('day').format('X'))
 		}
 
 		if (errors.amount || errors.date && this._isMounted) return this.setState({ errors })

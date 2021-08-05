@@ -14,6 +14,12 @@ import { TRANSACTIONS_PAGE_SIZE } from './../tools/Constants'
 
 let scrollForwarder
 
+function getUTCStartOfDayTimestamp() {
+	let localStartString = Moment().startOf('day').format('MMMM DD, YYYY')
+	let localStartDate = Date.parse(localStartString)
+	let utcStart = Moment(localStartDate).utc().startOf('day')
+	return Number(utcStart.format('X'))
+}
 export default class TransactionsView extends View {
 
 	constructor(props){
@@ -76,7 +82,7 @@ export default class TransactionsView extends View {
 	createTransaction() {
 		this.setState({ loading: true })
 		Requests.do('transaction.create', {
-			date: Number(Moment().format('X')),
+			date: getUTCStartOfDayTimestamp(),
 		}).then((response) => {
 			if (response.transaction) this.update(response.transaction, true)
 			if (this._isMounted) this.setState({ loading: false, error: null })

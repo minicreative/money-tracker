@@ -2,7 +2,7 @@
 
 const Async = require('async')
 const Papa = require('papaparse')
-const Moment = require('moment')
+const Moment = require('momen-timezone')
 
 const Database = require('./../tools/Database')
 const Validation = require('./../tools/Validation')
@@ -438,6 +438,39 @@ module.exports = router => {
 			Secretary.addToResponse(res, 'errors', errors, true)
 			next(err)
 		});
+	})
+
+	// NYUTC: converts all a user's transaction's date to the Unix timestamp of the first second of the
+	// UTC day, assuming the user's transaction's current timestamp looks as expected in America/New_York
+	router.post('/transaction.nyutc', (req, res, next) => {
+		req.handled = true;
+		Async.waterfall([
+			callback => {
+				Authentication.authenticateUser(req, function (err, token) {
+					callback(err, token);
+				});
+			},
+			(token, callback) => {
+				Transaction.find({ user: token.user }).exec((err, transactions) => {
+					callback(err, transactions);
+				});
+			},
+			(transactions, callback) => {
+				Async.eachOfSeries(transactions, (transaction, key, callback) => {
+					transaction.edit({
+						date: Moment.tz(transaction.date, "X", "America/New_York").utc().startOf('day').format('X')
+					}, (err, t) => {
+						console.log(`${t.description}: ${transaction.date} -> ${t.date}`)
+						callback(err)
+					})
+				}, (err) => {
+					callback(err)
+				})
+			}
+		], err => {
+			console.log(err)
+			next(err)
+		})
 	})
 
 }
