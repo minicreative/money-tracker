@@ -2,7 +2,7 @@
 
 const Async = require('async')
 const Papa = require('papaparse')
-const Moment = require('momen-timezone')
+const Moment = require('moment-timezone')
 
 const Database = require('./../tools/Database')
 const Validation = require('./../tools/Validation')
