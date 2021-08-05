@@ -119,7 +119,7 @@ module.exports = router => {
 					) return
 
 					// Get month ID for transaction
-					const monthID = Moment(transaction.date*1000).startOf('month').format('X')
+					const monthID = Moment(transaction.date, 'X').utc().startOf('month').format('X')
 
 					// Initialize monthly object if applicable
 					if (!monthly[monthID]) monthly[monthID] = clone(categoryAmounts)
@@ -142,8 +142,8 @@ module.exports = router => {
 				})
 
 				// Remove empty categories, create averages
-				const monthCount = Moment().diff(Moment(firstTransactionTime*1000), 'months', true)
-				const dayCount = Moment().diff(Moment(firstTransactionTime*1000), 'days', true)
+				const monthCount = Moment().diff(Moment(firstTransactionTime, 'X'), 'months', true)
+				const dayCount = Moment().diff(Moment(firstTransactionTime, 'X'), 'days', true)
 				const monthAverage = {
 					total: full.total / monthCount
 				}
@@ -212,7 +212,7 @@ module.exports = router => {
 
 					// Don't handle income or future transactions
 					if (transaction.amount > 0) return
-					if (Moment().isBefore(transaction.date*1000)) return
+					if (Moment().isBefore(Moment(transaction.date, 'X'))) return
 
 					// Exclusion filters
 					if (req.body.excludeGifts && 
@@ -229,7 +229,7 @@ module.exports = router => {
 					) return
 
 					// Get month ID for transaction
-					const monthID = Moment(transaction.date*1000).startOf('month').format('X')
+					const monthID = Moment(transaction.date, 'X').utc().startOf('month').format('X')
 
 					// Initial month if necessary
 					if (months[monthID] === undefined) {

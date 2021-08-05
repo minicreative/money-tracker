@@ -88,8 +88,8 @@ export default class DateRangeSelect extends React.Component {
             if (preset.subtract)
                 time = time.subtract(preset.subtract, preset.period)
             this.props.propagate({
-                startDate: time.startOf(preset.period).format('X'),
-                endDate: time.endOf(preset.period).format('X')
+                startDate: time.utc().startOf(preset.period).format('X'),
+                endDate: time.utc().endOf(preset.period).format('X')
             })
         } else {
             this.props.propagate()
@@ -113,8 +113,8 @@ export default class DateRangeSelect extends React.Component {
             selectedCustomRange: range
         })
         this.props.propagate({
-            startDate: Moment(range.from).startOf('day').format('X'),
-            endDate: Moment(range.to).endOf('day').format('X')
+            startDate: Moment(range.from).utc().startOf('day').format('X'),
+            endDate: Moment(range.to).utc().endOf('day').format('X')
         })
     }
     

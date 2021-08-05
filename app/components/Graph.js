@@ -39,7 +39,7 @@ export default class Category extends React.Component {
     build(data) {
         let formattedTimestamps = [];
         for (let i in data.timestamps) {
-            formattedTimestamps[i] = Moment(parseInt(data.timestamps[i])*1000).format('MMM YYYY')
+            formattedTimestamps[i] = Moment(data.timestamps[i], 'X').utc().format('MMM YYYY')
         }
 
         if (chart !== undefined) chart.destroy()

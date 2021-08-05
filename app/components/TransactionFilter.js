@@ -36,7 +36,6 @@ export default class TransactionFilter extends React.Component {
 
 		// Setup timer for updates
 		setTimeout(() => {
-            console.log(Date.now()-this.lastEdited)
 			if (Date.now()-this.lastEdited > QUERY_TIMER) this.props.propagate(filter)
 		}, QUERY_TIMER+10)
     }

@@ -71,7 +71,7 @@ export default class Category extends React.Component {
 							<th>{"Category"}</th>
 							<th>{"All Time"}</th>
 							{monthArray.map(([key]) => 
-								<th key={key}>{Moment(parseInt(key)*1000).format('MMM YYYY')}</th>)}
+								<th key={key}>{Moment(key, 'X').utc().format('MMM YYYY')}</th>)}
 							<th>{"Avg. Month"}</th>
 						</tr>
 					</thead>
