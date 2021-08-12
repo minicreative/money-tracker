@@ -5,7 +5,7 @@ os: linux
 dist: focals
 
 env:
-- IMAGE=minicreative/money-tracker:$TRAVIS_BUILD_NUMBER
+- IMAGE=minicreative/money-tracker
 
 branches:
   only:
@@ -20,13 +20,14 @@ install:
 script:
 - npm install
 - npm run build:full
-- docker build -t $IMAGE .
+- docker build -t "$IMAGE:$TRAVIS_BUILD_NUMBER" .
 
 before_deploy:
 - mkdir ${HOME}/.kube
 - echo "$KUBECONFIG_ENC" | base64 --decode > ${HOME}/.kube/config
 - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-- docker push $IMAGE
+- docker tag "$IMAGE:$TRAVIS_BUILD_NUMBER" "$IMAGE:latest"
+- docker image push --all-tags $IMAGE
 - envsubst < kube.yaml > kube-merged.yaml
 
 deploy:

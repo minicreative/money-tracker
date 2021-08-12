@@ -51,7 +51,7 @@ spec:
   tls:
   - hosts:
     - money.tomasroy.com
-    secretName: tls-cert
+    secretName: tomasroy-tls-cert
   rules:
   - host: money.tomasroy.com
     http:
