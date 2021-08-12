@@ -4,3 +4,6 @@ public/docs/*
 public/code/*
 *.DS_Store
 environment.sh
+*-merged.yaml
+*-config.yaml
+*-secret.yaml
