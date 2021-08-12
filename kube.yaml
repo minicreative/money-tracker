@@ -20,7 +20,7 @@ spec:
           protocol: TCP
         env:
         - name: mt_port
-          value: 3001
+          value: '3001'
         envFrom:
         - secretRef:
             name: money-tracker-secret
