@@ -51,7 +51,7 @@ spec:
   tls:
   - hosts:
     - money.tomasroy.com
-    secretName: tomasroy-tls-cert
+    secretName: money-tracker-tls-cert
   rules:
   - host: money.tomasroy.com
     http:
