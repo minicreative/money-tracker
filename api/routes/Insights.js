@@ -117,6 +117,12 @@ module.exports = router => {
 							transaction.category === '4b546459-285a-4a87-88de-3a3f5a6d96f5'    // Utilities
 						)
 					) return
+					if (req.body.excludeProperty && 
+						(
+							transaction.category === '22cd0d59-67b4-4b8b-950d-d11a61303fea' || // Cars
+							transaction.category === '93bc9662-f935-4a1d-b80b-5774d48a358c'    // Houses
+						)
+					) return
 
 					// Get month ID for transaction
 					const monthID = Moment(transaction.date, 'X').utc().startOf('month').format('X')
@@ -225,6 +231,12 @@ module.exports = router => {
 						(
 							transaction.category === 'ed8055cc-4031-41b0-bfb1-6be1d885ebe9' || // Rent
 							transaction.category === '4b546459-285a-4a87-88de-3a3f5a6d96f5'    // Utilities
+						)
+					) return
+					if (req.body.excludeProperty && 
+						(
+							transaction.category === '22cd0d59-67b4-4b8b-950d-d11a61303fea' || // Cars
+							transaction.category === '93bc9662-f935-4a1d-b80b-5774d48a358c'    // Houses
 						)
 					) return
 

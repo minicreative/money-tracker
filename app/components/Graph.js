@@ -13,12 +13,14 @@ export default class Category extends React.Component {
         super(props)
         this.handleExcludeGifts = this.handleExcludeGifts.bind(this);
 		this.handleExcludeHousing = this.handleExcludeHousing.bind(this);
+        this.handleExcludeProperty = this.handleExcludeProperty.bind(this);
 	}
 
 	state = {
         loading: false,
         excludeGifts: true,
         excludeHousing: false,
+        excludeProperty: true,
 	}
 
 	componentDidMount() {
@@ -26,10 +28,10 @@ export default class Category extends React.Component {
     }
     
     get() {
-        const { excludeGifts, excludeHousing } = this.state
+        const { excludeGifts, excludeHousing, excludeProperty } = this.state
 		this.setState({ loading: true })
 		Requests.do('insights.totals', {
-			excludeGifts, excludeHousing,
+			excludeGifts, excludeHousing, excludeProperty
 		}).then((response) => {
             this.setState({ loading: false });
             this.build(response.data)
@@ -80,15 +82,20 @@ export default class Category extends React.Component {
 		this.setState({ excludeHousing: event.target.checked }, this.get)
 	}
 
+    handleExcludeProperty(event) {
+		this.setState({ excludeProperty: event.target.checked }, this.get)
+	}
+
 	render() {
         const { id } = this.props;
-        const { loading, excludeGifts, excludeHousing } = this.state;
+        const { loading, excludeGifts, excludeHousing, excludeProperty } = this.state;
 
 		return (<div className="insight">
 			<div className="insight-heading">
 				<h2>{"Spending over time"}</h2>
                 <input type="checkbox" checked={excludeGifts} onChange={this.handleExcludeGifts} />{"Exclude gifts"}
 				<input type="checkbox" checked={excludeHousing} onChange={this.handleExcludeHousing} />{"Exclude housing"}
+                <input type="checkbox" checked={excludeProperty} onChange={this.handleExcludeProperty} />{"Exclude property"}
 			</div>
 			{loading && "Loading..."}
             <div className="insight-chart">
