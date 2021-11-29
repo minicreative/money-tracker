@@ -67,7 +67,7 @@ export default class Category extends React.Component {
 				<h2>{"Spending by Category"}</h2>
 				<input type="checkbox" checked={excludeGifts} onChange={this.handleExcludeGifts} />{"Exclude gifts"}
 				<input type="checkbox" checked={excludeHousing} onChange={this.handleExcludeHousing} />{"Exclude housing"}
-				<input type="checkbox" checked={excludeProperty} onChange={this.handleExcludeHousing} />{"Exclude property"}
+				<input type="checkbox" checked={excludeProperty} onChange={this.handleExcludeProperty} />{"Exclude property"}
 				<input type="checkbox" checked={parentCategoriesOnly} onChange={this.handleParentCategoriesOnly} />{"Group subcategories"}
 			</div>
 			{loading && "Loading..."}
