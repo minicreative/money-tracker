@@ -9,6 +9,7 @@ export default class Category extends React.Component {
 
 	constructor(props) {
 		super(props)
+		this.handleIncludeIncome = this.handleIncludeIncome.bind(this);
 		this.handleExcludeGifts = this.handleExcludeGifts.bind(this);
 		this.handleExcludeHousing = this.handleExcludeHousing.bind(this);
 		this.handleExcludeProperty = this.handleExcludeProperty.bind(this);
@@ -17,6 +18,7 @@ export default class Category extends React.Component {
 
 	state = {
 		loading: false,
+		includeIncome: false,
 		excludeGifts: true,
 		excludeHousing: true,
 		excludeProperty: true,
@@ -28,13 +30,17 @@ export default class Category extends React.Component {
 	}
 
 	get() {
-		const { excludeGifts, excludeHousing, excludeProperty, parentCategoriesOnly } = this.state
+		const { includeIncome, excludeGifts, excludeHousing, excludeProperty, parentCategoriesOnly } = this.state
 		this.setState({ loading: true })
 		Requests.do('insights.category', {
-			excludeGifts, excludeHousing, excludeProperty, parentCategoriesOnly,
+			includeIncome, excludeGifts, excludeHousing, excludeProperty, parentCategoriesOnly,
 		}).then((response) => {
 			this.setState({ loading: false, data: response.data });
 		})
+	}
+
+	handleIncludeIncome(event) {
+		this.setState({ includeIncome: event.target.checked }, this.get)
 	}
 
 	handleExcludeGifts(event) {
@@ -54,7 +60,7 @@ export default class Category extends React.Component {
 	}
 
 	render() {
-		const { data, loading, excludeGifts, excludeHousing, excludeProperty, parentCategoriesOnly } = this.state
+		const { data, loading, includeIncome, excludeGifts, excludeHousing, excludeProperty, parentCategoriesOnly } = this.state
 
 		let monthArray, fullArray
 		if (data) {
@@ -69,6 +75,7 @@ export default class Category extends React.Component {
 				<input type="checkbox" checked={excludeHousing} onChange={this.handleExcludeHousing} />{"Exclude housing"}
 				<input type="checkbox" checked={excludeProperty} onChange={this.handleExcludeProperty} />{"Exclude property"}
 				<input type="checkbox" checked={parentCategoriesOnly} onChange={this.handleParentCategoriesOnly} />{"Group subcategories"}
+				<input type="checkbox" checked={includeIncome} onChange={this.handleIncludeIncome} />{"Include income"}
 			</div>
 			{loading && "Loading..."}
 			{data && <div className="insight-table">

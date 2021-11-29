@@ -95,8 +95,7 @@ module.exports = router => {
 				// Iterate through transactions
 				transactions.forEach(transaction => {
 
-					// Don't handle income or future transactions
-					if (transaction.amount > 0) return
+					// Don't handle future transactions
 					if (Moment().isBefore(transaction.date*1000)) return
 
 					// Track first transaction time
@@ -105,10 +104,12 @@ module.exports = router => {
 					}
 
 					// Exclusion filters
+					if (!req.body.includeIncome && transaction.amount > 0) return
 					if (req.body.excludeGifts && 
 						(
 							transaction.category === 'a2af8852-5f71-4009-9c37-070263452cc3' || // Gifts
-							transaction.category === '9e5fc306-84a9-4232-8511-c6012a955540'    // Pets
+							transaction.category === '9e5fc306-84a9-4232-8511-c6012a955540' || // Pets
+							transaction.category === '2ef2e6a5-8c26-4051-82b3-10ea0d1d3f29'    // Charity
 						)
 					) return
 					if (req.body.excludeHousing && 
@@ -224,7 +225,8 @@ module.exports = router => {
 					if (req.body.excludeGifts && 
 						(
 							transaction.category === 'a2af8852-5f71-4009-9c37-070263452cc3' || // Gifts
-							transaction.category === '9e5fc306-84a9-4232-8511-c6012a955540'    // Pets
+							transaction.category === '9e5fc306-84a9-4232-8511-c6012a955540' || // Pets
+							transaction.category === '2ef2e6a5-8c26-4051-82b3-10ea0d1d3f29'    // Charity
 						)
 					) return
 					if (req.body.excludeHousing && 
