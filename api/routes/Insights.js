@@ -124,6 +124,11 @@ module.exports = router => {
 							transaction.category === '93bc9662-f935-4a1d-b80b-5774d48a358c'    // Houses
 						)
 					) return
+					if (req.body.excludeInvestment && 
+						(
+							transaction.category === 'e1d167bd-3db5-4a6f-912c-37ad439e3029'
+						)
+					) return
 
 					// Get month ID for transaction
 					const monthID = Moment(transaction.date, 'X').utc().startOf('month').format('X')
@@ -238,7 +243,12 @@ module.exports = router => {
 					if (req.body.excludeProperty && 
 						(
 							transaction.category === '22cd0d59-67b4-4b8b-950d-d11a61303fea' || // Cars
-							transaction.category === '93bc9662-f935-4a1d-b80b-5774d48a358c'    // Houses
+							transaction.category === '93bc9662-f935-4a1d-b80b-5774d48a358c'    // 1841 Montegut
+						)
+					) return
+					if (req.body.excludeInvestment && 
+						(
+							transaction.category === 'e1d167bd-3db5-4a6f-912c-37ad439e3029'
 						)
 					) return
 

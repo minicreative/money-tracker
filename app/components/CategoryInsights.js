@@ -13,6 +13,7 @@ export default class Category extends React.Component {
 		this.handleExcludeGifts = this.handleExcludeGifts.bind(this);
 		this.handleExcludeHousing = this.handleExcludeHousing.bind(this);
 		this.handleExcludeProperty = this.handleExcludeProperty.bind(this);
+		this.handleExcludeInvestment = this.handleExcludeInvestment.bind(this);
 		this.handleParentCategoriesOnly = this.handleParentCategoriesOnly.bind(this);
 	}
 
@@ -22,6 +23,7 @@ export default class Category extends React.Component {
 		excludeGifts: true,
 		excludeHousing: true,
 		excludeProperty: true,
+		excludeInvestment: true,
 		parentCategoriesOnly: true,
 	}
 
@@ -30,10 +32,10 @@ export default class Category extends React.Component {
 	}
 
 	get() {
-		const { includeIncome, excludeGifts, excludeHousing, excludeProperty, parentCategoriesOnly } = this.state
+		const { includeIncome, excludeGifts, excludeHousing, excludeProperty, excludeInvestment, parentCategoriesOnly } = this.state
 		this.setState({ loading: true })
 		Requests.do('insights.category', {
-			includeIncome, excludeGifts, excludeHousing, excludeProperty, parentCategoriesOnly,
+			includeIncome, excludeGifts, excludeHousing, excludeProperty, excludeInvestment, parentCategoriesOnly,
 		}).then((response) => {
 			this.setState({ loading: false, data: response.data });
 		})
@@ -55,12 +57,16 @@ export default class Category extends React.Component {
 		this.setState({ excludeProperty: event.target.checked }, this.get)
 	}
 
+	handleExcludeInvestment(event) {
+		this.setState({ excludeInvestment: event.target.checked }, this.get)
+	}
+
 	handleParentCategoriesOnly(event) {
 		this.setState({ parentCategoriesOnly: event.target.checked }, this.get)
 	}
 
 	render() {
-		const { data, loading, includeIncome, excludeGifts, excludeHousing, excludeProperty, parentCategoriesOnly } = this.state
+		const { data, loading, includeIncome, excludeGifts, excludeHousing, excludeProperty, excludeInvestment, parentCategoriesOnly } = this.state
 
 		let monthArray, fullArray
 		if (data) {
@@ -74,6 +80,7 @@ export default class Category extends React.Component {
 				<input type="checkbox" checked={excludeGifts} onChange={this.handleExcludeGifts} />{"Exclude gifts"}
 				<input type="checkbox" checked={excludeHousing} onChange={this.handleExcludeHousing} />{"Exclude housing"}
 				<input type="checkbox" checked={excludeProperty} onChange={this.handleExcludeProperty} />{"Exclude property"}
+				<input type="checkbox" checked={excludeInvestment} onChange={this.handleExcludeInvestment} />{"Exclude investment"}
 				<input type="checkbox" checked={parentCategoriesOnly} onChange={this.handleParentCategoriesOnly} />{"Group subcategories"}
 				<input type="checkbox" checked={includeIncome} onChange={this.handleIncludeIncome} />{"Include income"}
 			</div>
