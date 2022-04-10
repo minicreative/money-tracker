@@ -121,7 +121,8 @@ module.exports = router => {
 					if (req.body.excludeProperty && 
 						(
 							transaction.category === '22cd0d59-67b4-4b8b-950d-d11a61303fea' || // Cars
-							transaction.category === '93bc9662-f935-4a1d-b80b-5774d48a358c'    // Houses
+							transaction.category === '93bc9662-f935-4a1d-b80b-5774d48a358c' || // 1841 Montegut
+							transaction.category === 'faf71bd4-4bad-453b-b3a2-6dfbe1e547c3'    // Tools
 						)
 					) return
 					if (req.body.excludeInvestment && 
@@ -243,7 +244,8 @@ module.exports = router => {
 					if (req.body.excludeProperty && 
 						(
 							transaction.category === '22cd0d59-67b4-4b8b-950d-d11a61303fea' || // Cars
-							transaction.category === '93bc9662-f935-4a1d-b80b-5774d48a358c'    // 1841 Montegut
+							transaction.category === '93bc9662-f935-4a1d-b80b-5774d48a358c' || // 1841 Montegut
+							transaction.category === 'faf71bd4-4bad-453b-b3a2-6dfbe1e547c3'    // Tools
 						)
 					) return
 					if (req.body.excludeInvestment && 
