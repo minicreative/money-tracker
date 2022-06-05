@@ -27,7 +27,7 @@ export default class Header extends React.Component{
 				<div className="navigation">
 					{inside ? <div className="menu main_menu">
 						<NavLink to="/transactions">{"Transactions"}</NavLink>
-						<NavLink to="/assets">{"Assets"}</NavLink>
+						{/* <NavLink to="/assets">{"Assets"}</NavLink> */}
 						<NavLink to="/categories">{"Categories"}</NavLink>
 						<NavLink to="/insights">{"Insights"}</NavLink>
 					</div> : null}
