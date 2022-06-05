@@ -41,9 +41,9 @@ module.exports = router => {
 			// Authenticate user
 			callback => {
 				Authentication.authenticateUser(req, function (err, token) {
-					query.user = token.user;
-					callback(err);
-				});
+					if (token) query.user = token.user
+					callback(err)
+				})
 			},
 
 			// Validate params
@@ -90,9 +90,9 @@ module.exports = router => {
 			// Authenticate user
 			callback => {
 				Authentication.authenticateUser(req, function (err, token) {
-					query.user = token.user;
-					callback(err);
-				});
+					if (token) query.user = token.user
+					callback(err)
+				})
 			},
 
 			// Validate params
