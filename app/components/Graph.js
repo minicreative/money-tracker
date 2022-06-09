@@ -32,7 +32,7 @@ export default class Category extends React.Component {
     get() {
         const { excludeGifts, excludeHousing, excludeProperty, excludeInvestment } = this.state
 		this.setState({ loading: true })
-		Requests.do('insights.totals', {
+		Requests.do('insight.totals', {
 			excludeGifts, excludeHousing, excludeProperty, excludeInvestment
 		}).then((response) => {
             this.setState({ loading: false });

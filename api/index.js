@@ -33,7 +33,7 @@ module.exports = {
 		require('./routes/User')(router)
 		require('./routes/Transaction')(router)
 		require('./routes/Category')(router)
-		require('./routes/Insights')(router)
+		require('./routes/Insight')(router)
 
 		// Set root route, configure router
 		router.get('/', (req, res) => res.send('Welcome to the Money Tracker API'));

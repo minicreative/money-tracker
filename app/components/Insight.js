@@ -24,7 +24,7 @@ export default class Insight extends React.Component {
 
         // Setup settings from props
         if (metadata.type === "category-table") {
-            this.url = "insights.category"
+            this.url = "insight.category"
             this.showParentCategoriesToggle = true
         }
 

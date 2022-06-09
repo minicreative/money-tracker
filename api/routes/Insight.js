@@ -1,16 +1,17 @@
-/** @namespace api/routes/Insights */
+/** @namespace api/routes/Insight */
 
 const Async = require('async')
 const Moment = require('moment')
 
-const Database = require('./../tools/Database')
-const Secretary = require('./../tools/Secretary')
-const Authentication = require('./../tools/Authentication')
-const Dates = require('./../tools/Dates')
-const Filter = require('./../tools/Filter')
+const Database = require('../tools/Database')
+const Secretary = require('../tools/Secretary')
+const Authentication = require('../tools/Authentication')
+const Dates = require('../tools/Dates')
+const Filter = require('../tools/Filter')
 
-const Transaction = require('./../model/Transaction')
-const Category = require('./../model/Category')
+const Insight = require('../model/Insight')
+const Transaction = require('../model/Transaction')
+const Category = require('../model/Category')
 
 function clone(object) {
 	return JSON.parse(JSON.stringify(object))
@@ -19,9 +20,52 @@ function clone(object) {
 module.exports = router => {
 
 	/**
-	 * @api {POST} /insights.category Category
+	 * @api {POST} /insight.list List
+	 * @apiName List
+	 * @apiGroup Insight
+	 * @apiDescription Lists insights
+	 *
+	 * @apiSuccess {Array} insights Insight object array
+	 *
+	 * @apiUse Authorization
+	 * @apiUse Error
+	 */
+	 router.post('/insight.list', (req, res, next) => {
+		req.handled = true;
+
+		// Synchronously perform the following tasks...
+		Async.waterfall([
+
+			// Authenticate user
+			callback => {
+				Authentication.authenticateUser(req, function (err, token) {
+					callback(err, token);
+				});
+			},
+
+			// Find insights for user
+			(token, callback) => {
+				const pageOptions = {
+					model: Insight,
+					sort: 'name',
+					pageSize: 100,
+					query: {
+						user: token.user,
+					},
+				};
+				Database.page(pageOptions, (err, insights) => {
+					Secretary.addToResponse(res, "insights", insights);
+					callback(err)
+				})
+			},
+
+		], err => next(err));
+	})
+
+	/**
+	 * @api {POST} /insight.category Category
 	 * @apiName Category
-	 * @apiGroup Insights
+	 * @apiGroup Insight
 	 * @apiDescription Get sums by category
 	 *
 	 * @apiSuccess {Object} categories
@@ -29,7 +73,7 @@ module.exports = router => {
 	 * @apiUse Authorization
 	 * @apiUse Error
 	 */
-	router.post('/insights.category', (req, res, next) => {
+	router.post('/insight.category', (req, res, next) => {
 		req.handled = true;
 
 		// Synchronously perform the following tasks...
@@ -152,9 +196,9 @@ module.exports = router => {
 	})
 
 	/**
-	 * @api {POST} /insights.totals Totals
+	 * @api {POST} /insight.totals Totals
 	 * @apiName Totals
-	 * @apiGroup Insights
+	 * @apiGroup Insight
 	 * @apiDescription Get totals over time
 	 *
 	 * @apiSuccess {Object} totals
@@ -162,7 +206,7 @@ module.exports = router => {
 	 * @apiUse Authorization
 	 * @apiUse Error
 	 */
-	router.post('/insights.totals', (req, res, next) => {
+	router.post('/insight.totals', (req, res, next) => {
 		req.handled = true;
 
 		// Synchronously perform the following tasks...
