@@ -3,8 +3,7 @@
 import React from 'react'
 
 import View from '../components/View';
-import CategoryInsights from '../components/CategoryInsights'
-import Graph from '../components/Graph'
+import Insight from '../components/Insight';
 
 export default class InsightsView extends View {
 	constructor(props){
@@ -17,8 +16,7 @@ export default class InsightsView extends View {
 				<div className="heading">
 					<h1>{"Insights"}</h1>
 				</div>
-				<CategoryInsights />
-				<Graph id={"totals"} />
+				<Insight metadata={{ type: "category-table" }} />
 			</div>
 		);
   	}

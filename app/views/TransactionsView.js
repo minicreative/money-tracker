@@ -186,7 +186,7 @@ export default class TransactionsView extends View {
 								: `${Numeral(sum).format('$0,0.00')}`}
 					</p>
 				</div>
-				<TransactionFilter propagate={this.handleFilter} />
+				<TransactionFilter propagate={this.handleFilter} showSearch={true} />
 				<div className="row heading_row columns transaction-row">
 					<div className="column date">Date</div>
 					<div className="column desc">Note</div>

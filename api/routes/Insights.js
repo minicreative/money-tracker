@@ -7,6 +7,7 @@ const Database = require('./../tools/Database')
 const Secretary = require('./../tools/Secretary')
 const Authentication = require('./../tools/Authentication')
 const Dates = require('./../tools/Dates')
+const Filter = require('./../tools/Filter')
 
 const Transaction = require('./../model/Transaction')
 const Category = require('./../model/Category')
@@ -43,12 +44,14 @@ module.exports = router => {
 
 			// Find transactions for user
 			(token, callback) => {
+				let query = {
+					user: token.user
+				}
+				Filter.filterForTransactionsRequest(query, req.body)
 				Database.find({
 					model: Transaction,
 					sort: '-date',
-					query: {
-						user: token.user,
-					},
+					query,
 				}, (err, transactions) => {
 					callback(err, token, transactions)
 				})
@@ -70,9 +73,7 @@ module.exports = router => {
 			(transactions, categories, callback) => {
 
 				const parentsOnly = req.body.parentCategoriesOnly;
-				const categoryNames = {
-					total: "All spending"
-				};
+				const categoryNames = {};
 				const categoryAmounts = {
 					total: 0
 				};
@@ -102,34 +103,6 @@ module.exports = router => {
 					if (transaction.date < firstTransactionTime) {
 						firstTransactionTime = transaction.date
 					}
-
-					// Exclusion filters
-					if (!req.body.includeIncome && transaction.amount > 0) return
-					if (req.body.excludeGifts && 
-						(
-							transaction.category === 'a2af8852-5f71-4009-9c37-070263452cc3' || // Gifts
-							transaction.category === '9e5fc306-84a9-4232-8511-c6012a955540' || // Pets
-							transaction.category === '2ef2e6a5-8c26-4051-82b3-10ea0d1d3f29'    // Charity
-						)
-					) return
-					if (req.body.excludeHousing && 
-						(
-							transaction.category === 'ed8055cc-4031-41b0-bfb1-6be1d885ebe9' || // Rent
-							transaction.category === '4b546459-285a-4a87-88de-3a3f5a6d96f5'    // Utilities
-						)
-					) return
-					if (req.body.excludeProperty && 
-						(
-							transaction.category === '22cd0d59-67b4-4b8b-950d-d11a61303fea' || // Cars
-							transaction.category === '93bc9662-f935-4a1d-b80b-5774d48a358c' || // 1841 Montegut
-							transaction.category === 'faf71bd4-4bad-453b-b3a2-6dfbe1e547c3'    // Tools
-						)
-					) return
-					if (req.body.excludeInvestment && 
-						(
-							transaction.category === 'e1d167bd-3db5-4a6f-912c-37ad439e3029'
-						)
-					) return
 
 					// Get month ID for transaction
 					const monthID = Moment(transaction.date, 'X').utc().startOf('month').format('X')

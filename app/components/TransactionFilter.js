@@ -11,12 +11,14 @@ export default class TransactionFilter extends React.Component {
         this.handleDescriptionChange = this.handleDescriptionChange.bind(this)
         this.handleCategoryChange = this.handleCategoryChange.bind(this)
         this.handleDateRangeChange = this.handleDateRangeChange.bind(this)
+        this.handleParentCategoriesChange = this.handleParentCategoriesChange.bind(this)
         this.reset = this.reset.bind(this)
 	}
 
 	state = {
         filter: {
             description: '',
+            parentCategoriesOnly: false,
         },
 	}
 
@@ -54,26 +56,37 @@ export default class TransactionFilter extends React.Component {
         this.props.propagate(filter)
     }
 
+    handleParentCategoriesChange(event) {
+        const { filter } = this.state
+        filter.parentCategoriesOnly = event.target.checked
+        this.setState({ filter })
+        this.props.propagate(filter)
+    }
+
     reset() {
-        this.setState({ resetAll: true, filter: {description: ''} }, () => {
+        this.setState({ resetAll: true, filter: {description: '', parentCategoriesOnly: false} }, () => {
             this.setState({ resetAll: null })
             this.props.propagate({})
         })
     }
 
 	render() {
+        const { showParentCategoriesToggle, showSearch } = this.props
 		const { filter, resetAll } = this.state
 		return (
 			<div className="transaction-filter">
-                <div className="field">
+                {showSearch && <div className="field">
                     <input name="query" type="text" value={filter.description} onChange={this.handleDescriptionChange} />
-                </div>
+                </div>}
                 <div className="field">
                     {!resetAll && <CategorySelect propagate={this.handleCategoryChange} />}
                 </div>
                 <div className="field">
                     {!resetAll && <DateRangeSelect propagate={this.handleDateRangeChange} />}
                 </div>
+                {showParentCategoriesToggle && <div className="field">
+                    <input type="checkbox" checked={filter.parentCategoriesOnly} onChange={this.handleParentCategoriesChange} />{"Group subcategories"}
+                </div>}
                 <div className="field" onClick={this.reset}>{"Reset"}</div>
             </div>
         )
