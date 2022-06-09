@@ -22,6 +22,14 @@ export default class Insight extends React.Component {
     componentDidMount() {
         const { metadata } = this.props
 
+        // Setup filter from props
+        // TODO: Refactor insight filter metadata
+        if (metadata.description) this.filter.description = metadata.description
+        if (metadata.categories) this.filter.categories = metadata.categories
+        if (metadata.startDate) this.filter.startDate = metadata.startDate
+        if (metadata.endDate) this.filter.endDate = metadata.endDate
+        if (metadata.parentCategoriesOnly) this.filter.parentCategoriesOnly = metadata.parentCategoriesOnly
+
         // Setup settings from props
         if (metadata.type === "category-table") {
             this.url = "insight.category"
@@ -57,7 +65,8 @@ export default class Insight extends React.Component {
                 {loading && "Loading..."}
                 <TransactionFilter 
                     propagate={this.handleFilter} 
-                    showParentCategoriesToggle={this.showParentCategoriesToggle} 
+                    showParentCategoriesToggle={this.showParentCategoriesToggle}
+                    initialFilter={metadata}
                 />
                 {insight}
             </div>

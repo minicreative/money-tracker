@@ -24,10 +24,25 @@ export default class TransactionFilter extends React.Component {
 
 	componentDidMount() {
 		this._isMounted = true
+        if (this.props.initialFilter) this.populate()
 	}
 
 	componentWillUnmount() {
 		this._isMounted = false
+    }
+
+    populate() {
+        const { initialFilter } = this.props
+        let filter = this.state.filter
+
+        if (initialFilter.description) filter.description = initialFilter.description
+        if (initialFilter.categories) filter.categories = initialFilter.categories
+        if (initialFilter.startDate) filter.startDate = initialFilter.startDate
+        if (initialFilter.endDate) filter.endDate = initialFilter.endDate
+        if (initialFilter.parentCategoriesOnly) filter.parentCategoriesOnly = initialFilter.parentCategoriesOnly
+
+        this.setState({ filter })
+        console.log(filter)
     }
     
     handleDescriptionChange(event) {

@@ -42,7 +42,7 @@ export default class InsightsView extends View {
 
 		let insightElements = []
 		for (let insight of insights) {
-			insightElements.push(<Insight metadata={insight} />)
+			insightElements.push(<Insight key={insight.guid} metadata={insight} />)
 		}
 
 		return (
