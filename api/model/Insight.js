@@ -54,7 +54,7 @@ function InsightStaticMethods (schema) {
 	 * @param {Object} params
 	 * @param {String} params.user GUID of user
      * @param {String} params.type Type of insight
-	 * @param {[String]} params.categories Category GUIDs query filter
+	 * @param {Array} params.categories Category GUIDs query filter
 	 * @param {String} params.description Description query filter
      * @param {String} params.startDate Start date query filter (UNIX timestamp)
      * @param {String} params.endDate End date query filter (UNIX timestamp)
