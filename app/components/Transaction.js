@@ -64,8 +64,10 @@ export default class Transaction extends React.Component {
 		const request = {
 			guid: this.props.transaction.guid,
 			description: fields.description,
-			categoryName: fields.category,
 		}
+
+		// Format category
+		request.categoryName = fields.category.trim()
 
 		// Validate amount
 		if (fields.amount.match(/[^.,$+-\d]/g)) {
