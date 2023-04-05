@@ -13,6 +13,16 @@ export default {
 		if (body.user) Storage.set('user', body.user);
 	},
 
+	/**
+	 * Handles an authentication error
+	 * @memberof modules/Authentication
+	 * @param {Object} body Server response
+	 */
+	handleError: body => {
+		Storage.clear();
+		window.location.href = "/"
+	},
+
 	logout: () => {
 		Storage.clear();
 	},
