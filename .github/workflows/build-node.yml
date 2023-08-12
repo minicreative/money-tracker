@@ -41,4 +41,4 @@ jobs:
         base64-kube-config: ${{ secrets.kube_config }}
     - uses: actions/checkout@v3
     - name: Update Kubernetes deployment
-      run: kubectl set image "deployment/${{ vars.docker_name }}" "main=${{ vars.docker_name }}:${{ github.sha }}"
+      run: kubectl set image "deployment/${{ vars.kube_deployment }}" "main=${{ vars.docker_name }}:${{ github.sha }}"
