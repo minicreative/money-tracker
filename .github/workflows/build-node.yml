@@ -6,11 +6,6 @@ on:
   pull_request:
     branches: [ "main" ]
 
-env:
-  KUBE_DEPLOYMENT: "${{ vars.KUBE_DEPLOYMENT }}"
-  DOCKER_NAME: "${{ vars.DOCKER_NAME }}"
-  DOCKER_TAG: "${{ vars.DOCKER_NAME }}:${{ github.sha }}"
-
 jobs:
   build:
     environment: Production
@@ -25,14 +20,17 @@ jobs:
       run: npm install
     - name: Build the app
       run: npm run build:full
-    - name: Build the Docker image
-      run: docker build . --tag "$DOCKER_TAG"
     - name: Login to Docker
-      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ vars.DOCKER_USERNAME }}" --password-stdin
-    - name: Make this Docker image tag the latest
-      run: docker tag "$DOCKER_TAG" "${{ vars.DOCKER_NAME }}:latest"
-    - name: Push Docker image
-      run: docker image push --all-tags "$DOCKER_NAME"
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.docker_username }}
+        password: ${{ secrets.docker_password }}
+    - name: Build and Push the Image
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        push: true
+        tags: ${{ vars.docker_name }}:${{ github.sha }}, ${{ vars.docker_name }}:latest
   publish:
     environment: Production
     needs: build
@@ -40,10 +38,7 @@ jobs:
     steps:
     - uses: tale/kubectl-action@v1
       with:
-        base64-kube-config: ${{ secrets.KUBE_CONFIG }}
+        base64-kube-config: ${{ secrets.kube_config }}
     - uses: actions/checkout@v3
-    - name: Provide latest hash on remote to environment
-      run: echo "LATEST_HASH=$(git rev-parse origin/main)" >> $GITHUB_ENV
-    - name: Update Kubernetes deployment if latest hash
-      if: ${{ github.sha == env.LATEST_HASH }}
-      run: kubectl set image "deployment/$KUBE_DEPLOYMENT" "main=$DOCKER_TAG"
+    - name: Update Kubernetes deployment
+      run: kubectl set image "deployment/${{ vars.docker_name }}" "main=${{ vars.docker_name }}:${{ github.sha }}"
