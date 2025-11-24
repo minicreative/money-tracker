@@ -43,7 +43,12 @@ const Requests = {
 			if (response.statusCode === 200) {
 				Authentication.handleResponse(body);
 				return resolve(body);
-			} 
+			}
+
+			// Handle authentication errors
+			if (response.statusCode === 401) {
+				Authentication.handleError(body);
+			}
 			
 			// Handle error responses
 			reject(body);		
